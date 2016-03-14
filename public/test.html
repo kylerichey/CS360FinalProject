@@ -1,0 +1,21 @@
+<html>
+<head>
+<script>
+    var var1 = "<html><body>Content1</body></html>",
+        var2 = "<html><body>Content2</body></html>";
+
+    function doublelink(i) {
+        top.iframe2.location = "javascript:parent.var" + i;
+    }
+</script>
+</head>
+<body>
+
+<a href="http://www.example.com" target="iframe1" onclick="doublelink(1);">Link 1</a><br>
+<a href="http://www.example.com" target="iframe1" onclick="doublelink(2);">Link 2</a><br>
+ <iframe src="/default.asp" align="right">
+</iframe> 
+
+ <iframe src="/default.asp" width="500" height="500" align="left"></iframe> 
+</body>
+</html>
