@@ -24,6 +24,10 @@ function($scope,$http){
 	$scope.jobBurgerFlipperTooltip = "Pretty much the only job someone as dumb as you could get. Cost: 3 knowledge Reward: 1 penny per hour";
 	$scope.pennyRate = 0;
 
+	$scope.getDatetime = function() {
+		var today = new Date();	
+		return today.getHours() +":"+ today.getMinutes() + ":" + today.getSeconds();	
+	};
 	
 	$scope.getPlayerName = function(){
 		return $scope.playerName;
@@ -34,7 +38,7 @@ function($scope,$http){
 	};
 	
 	$scope.gameOutputConsoleList = [
-		{content:'You are a poor student wandering through college', number:0}, 		
+		{content:'You are a poor student wandering through college', number:0, timestamp:$scope.getDatetime()}, 		
 	];
 
 	$scope.jobBurgerFlipper = function(){
@@ -44,8 +48,8 @@ function($scope,$http){
 			$scope.pennyRate = 	$scope.pennyRate+ 0.006;	
 		}
 		else{
-			$scope.gameOutputConsoleEntryCount = $scope.gameOutputConsoleEntryCount +1;
-			 $scope.gameOutputConsoleList.push({content:"Not enough knowledge to work there", number:$scope.gameOutputConsoleEntryCount}); 				
+				$scope.addEntryToConsole("Not enough knowledge to work there");	
+		 
 			}		
 		
 	};
@@ -64,9 +68,8 @@ function($scope,$http){
 				$scope.pencilCount = $scope.pencilCount + 1;
 				$scope.bookUnlocked =true;
 			}
-			else{
-			$scope.gameOutputConsoleEntryCount = $scope.gameOutputConsoleEntryCount +1;
-			 $scope.gameOutputConsoleList.push({content:"Not enough penny to buy pencil", number:$scope.gameOutputConsoleEntryCount}); 				
+			else{		
+				$scope.addEntryToConsole("Not enough penny to buy pencil");				 
 			}			
 		};
 
@@ -76,18 +79,22 @@ function($scope,$http){
 		$scope.bookCount = $scope.bookCount + 1;
 		 if(!$scope.classTabUnlocked){
 			 $scope.classTabUnlocked = true;
-			 $scope.gameOutputConsoleEntryCount = $scope.gameOutputConsoleEntryCount +1;
-			$scope.gameOutputConsoleList.push({content:"Class Tab Unlocked", number:$scope.gameOutputConsoleEntryCount}); 	
+			 $scope.addEntryToConsole("Class Tab Unlocked");	
 			 
 		 }
 		
 	}
 	else{
-		$scope.gameOutputConsoleEntryCount = $scope.gameOutputConsoleEntryCount +1;
-		$scope.gameOutputConsoleList.push({content:"Not enough penny to buy book", number:$scope.gameOutputConsoleEntryCount}); 		
+		
+		$scope.addEntryToConsole("Not enough penny to buy book");		
 		}			
 	};
 	
+	$scope.addEntryToConsole = function(contentText){
+		$scope.gameOutputConsoleEntryCount = $scope.gameOutputConsoleEntryCount +1;
+		$scope.gameOutputConsoleList.push({content:contentText, number:$scope.gameOutputConsoleEntryCount,timestamp:$scope.getDatetime()}); 	
+		
+	};
 	
 	$scope.classEng101 = function() { 
 		if($scope.bookCount>2){
@@ -95,13 +102,14 @@ function($scope,$http){
 			$scope.knowledgeRate = $scope.knowledgeRate + 0.006;			
 			$scope.knowledgeUnlocked = true;
 			$scope.jobsTabUnlocked = true;
+			$scope.addEntryToConsole("Jobs Tab Unlocked");
+			
 				
 			
 		}
 		else {
-			$scope.gameOutputConsoleEntryCount = $scope.gameOutputConsoleEntryCount +1;
-		$scope.gameOutputConsoleList.push({content:"Not enough book to take ENG 101", number:$scope.gameOutputConsoleEntryCount}); 	
-		}
+			$scope.addEntryToConsole("Not enough book to take ENG 101");				
+			}
 	};
 	
 	
@@ -111,12 +119,17 @@ function($scope,$http){
 	};
 	
 	$scope.getKnowledgeRate = function(){
-		return $scope.knowledgeRate * 100;
+		
+		return  Math.round($scope.knowledgeRate *1000)/100;	
 	};
 	
 	$scope.getPennyRate = function(){
-		return $scope.pennyRate * 100;
+		return  Math.round($scope.pennyRate *1000)/100;	
 	};
+	
+	$scope.getPennyCount = function(){		
+		return Math.round($scope.pennyCount *100)/100;	
+	}
 
 var updateScreenTimerVar = setInterval(updateScreenTimer, 1000);
 	function updateScreenTimer() {
