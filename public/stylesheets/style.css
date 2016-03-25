@@ -3,8 +3,26 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-
 .tab-pane button{
+	width:80%;
+	margin-bottom: 6px;
+}
+.panel {
+	margin-bottom:15px;
+}
+
+
+
+.panel-body button{
+	width:100%;
+}
+
+
+h5{
+	text-align: center;
+}
+
+.panel {
 	width:80%;
 	margin-bottom: 6px;
 }
