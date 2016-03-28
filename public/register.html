@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Welcome to the Student Game</title>          
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">    
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> 
+        <link rel="stylesheet" href="/public/stylesheets/style.css">
+    </head>
+    <body>
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+            <h2>The Student Game</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+            <form action="/users/register" method="post">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" class="form-control" name="username" placeholder="Username">
+                </div>
+                <div class="form-group">
+                    <label for="password1">Password</label>
+                    <input type="password" class="form-control" name="password1" placeholder="Password">
+                </div>
+                <div class="form-group">
+                    <label for="password2">Reenter password</label>
+                    <input type="password" class="form-control" name="password2" placeholder="Reenter Password">
+                </div>
+                <div class="form-group">
+                    <label for="body-type">Body Type</label>
+                    <input type="text" class="form-control" name="body_type" placeholder="Body Type">
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Register</button>
+                    <a href="/login.html" class="btn btn-default">Login</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

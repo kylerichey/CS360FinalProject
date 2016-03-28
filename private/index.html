@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html ng-app="studentGame">
+	<head>		
+		 <meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">	
+		<link rel="stylesheet" href="/stylesheets/style.css">
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"> </script>			
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>  
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"> </script>			
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>			
+		<script src="/private/javascripts/coreController.js"></script>					
+		<script>
+			$(document).ready(function(){
+				$('[data-toggle="tooltip"]').tooltip();   
+			});
+		</script>
+		<title>CS 360 Final Project - The Student Game</title>
+	</head>	
+	
+	<body  ng-controller="coreController"> 		
+		<div class="container" >
+			<div class="row">
+				<div class="col-md-11">
+					<h2>The Student Game</h2>
+				</div>
+				<div class="col-md-1">
+						<a href="/login" class="btn btn-primary">Logout</a>
+				</div>
+			</div>				
+			<br>			
+			<ul class="nav nav-tabs">
+				<li class="active"><a data-toggle="tab" href="#selfTab">Self</a></li>
+				<li ng-show="classTabUnlocked"><a data-toggle="tab" href="#classTab">Classes</a></li>  
+				<li ng-show="jobsTabUnlocked"><a data-toggle="tab" href="#jobTab">Jobs</a></li>      
+			</ul>	
+			<br>			
+			<div class="row">
+				<div class="col-md-4">
+					<h4>Name: {{getPlayerName()}}
+					<h4>Body Type: {{getPlayerBodyLevel()}}
+					<h4 >Penny: {{getPennyCount()}} ({{getPennyRate()}}/sec)</h4>
+					<h4 ng-show="pencilUnlocked">Pencil: {{getPencilCount()}} </h4>
+					<h4 ng-show="bookUnlocked">Book: {{getBookCount()}} </h4>
+					<h4 ng-show="knowledgeUnlocked"> Knowledge: {{getKnowledgeCount()}} ({{getKnowledgeRate()}}/sec) </h4>	
+				</div>
+				<div class="col-md-4">
+					<div class="tab-content">
+						<div id="selfTab" class="tab-pane fade in active">
+								<button  class="btn btn-primary" ng-click="increasePennyCount()" data-toggle="tooltip" data-placement="left" title="{{pennyTooltip}}">Go find one Penny</button> 
+								
+								<button class="btn" ng-class="getPennyCount()>9 ? 'btn-primary': 'btn-default'" ng-show="pencilUnlocked" ng-click="increasePencilCount()" data-toggle="tooltip" data-placement="left" title="{{pencilTooltip}}">Buy pencil <span class="badge">{{getPencilCount()}}</span></button> 
+								
+								<button class="btn" ng-class="getPennyCount()>19 ? 'btn-primary': 'btn-default'" ng-show="bookUnlocked" ng-click="increaseBookCount()" data-toggle="tooltip" data-placement="left" title="{{bookTooltip}}">Buy book <span class="badge">{{getBookCount()}}</span></button>
+						</div>
+						<div id="classTab" class="tab-pane fade">	
+							<div class="panel panel-primary" ng-show="cs142Unlocked">
+								<div class="panel-heading">
+									<h5> CS 142 <span class="badge">{{getCS142Count()}}</span> </h5>
+								</div>
+								<div class="panel-body">
+									<button  class="btn" ng-class="getBookCount()>=10 ? 'btn-success': 'btn-default'" ng-click="classCS142()" data-toggle="tooltip" data-placement="left" title="{{cs142Tooltip}}">Take CS 142</button> 
+								
+									<button class="btn" ng-class="cs142CanStudy() == true ? 'btn-success': 'btn-default'" ng-click="classCS142Study()" data-toggle="tooltip" data-placement="left" title="{{cs142StudyTooltip}}" >Do Bubble Sort Lab </button>
+								
+									<button class="btn" ng-class="cs142CanFinal() == true ? 'btn-success': 'btn-default'" ng-click="classCS142Final()" data-toggle="tooltip" data-placement="left" title="{{cs142FinalTooltip}}" >Take the Final </button>
+								</div>
+							  </div> 								
+							 <div class="panel panel-primary">
+								<div class="panel-heading">
+									<h5> English 101 <span class="badge">{{getEng101Count()}}</span> </h5>
+								</div>
+								<div class="panel-body">
+									<button  class="btn" ng-class="getBookCount()>2 ? 'btn-success': 'btn-default'" ng-click="classEng101()" data-toggle="tooltip" data-placement="left" title="{{eng101Tooltip}}">Take ENG 101</button> 
+								
+									<button class="btn" ng-class="eng101CanStudy() == true ? 'btn-success': 'btn-default'" ng-click="classEng101Study()" data-toggle="tooltip" data-placement="left" title="{{eng101StudyTooltip}}" >Study "English" </button>
+								
+									<button class="btn" ng-class="eng101CanFinal() == true ? 'btn-success': 'btn-default'" ng-click="classEng101Final()" data-toggle="tooltip" data-placement="left" title="{{eng101FinalTooltip}}" >Take the Final </button>
+								</div>
+							  </div>											
+						</div>	
+						<div id="jobTab" class="tab-pane fade">						
+								<button  class="btn" ng-class="getKnowledgeCount()>3 ? 'btn-primary': 'btn-default'" ng-click="jobBurgerFlipper()" data-toggle="tooltip" data-placement="left" title="{{jobBurgerFlipperTooltip}}">Burger Flipper</button> 
+						</div>  
+						</div>
+				</div>
+				<div id="console" class="col-md-4">
+					<h4> Output: </h4>
+					<div ng-repeat="entry in gameOutputConsoleList | orderBy: '-number' | limitTo:15"> 		
+						{{entry.timestamp}}: {{entry.content}}
+						<br><br>
+					</div>
+				</div>
+		    </div>
+		
+		</div>
+		 
+		
+
+	</body>
+</html>

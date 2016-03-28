@@ -1,11 +1,18 @@
 var express = require('express');
+var bodyParser = require('body-parser');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
+var expressSession = require('express-session');
+
+var mongoStore = require('connect-mongo')({session: expressSession});
+var mongoose = require('mongoose');
+require('./models/users_model.js');
+var conn = mongoose.connect('mongodb://localhost/studentgame');
 
 var routes = require('./routes/index');
+console.log(routes);
 var users = require('./routes/users');
 
 var app = express();
@@ -20,7 +27,23 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(expressSession({
+  secret: 'SECRET',
+  cookie: {maxAge:2628000000},
+  store: new mongoStore({
+      mongooseConnection:mongoose.connection
+    })
+  }));
+app.use('/', express.static(path.join(__dirname, 'public')));
+app.all('/private/*', function(req, res, next) {
+  console.log("WAAAAZUP!");
+  if (req.session.user) {
+    next();
+  } else {
+    res.redirect("/login.html");
+  }
+});
+app.use('/private', express.static(path.join(__dirname, 'private')));
 
 app.use('/', routes);
 app.use('/users', users);
