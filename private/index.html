@@ -8,7 +8,7 @@
 		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>  
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"> </script>			
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>			
-		<script src="/private/javascripts/coreController.js"></script>					
+		<script src="javascripts/coreController.js"></script>					
 		<script>
 			$(document).ready(function(){
 				$('[data-toggle="tooltip"]').tooltip();   
@@ -21,13 +21,21 @@
 		<div class="container" >
 			<div class="row">
 				<div class="col-md-11">
-					<h2>The Student Game</h2>
+					<h2>The Student Game</h2>					
 				</div>
 				<div class="col-md-1">
 						<a href="/login" class="btn btn-primary">Logout</a>
 				</div>
-			</div>				
-			<br>			
+			</div>	
+			<br>
+			<div id="test">
+					<h4> Output: </h4>
+					<div ng-repeat="entry in dynamicList | orderBy: '-number' | limitTo:15"> 
+					
+						<button class="btn tooltip-button" " ng-show="pencilUnlocked" ng-click="entry.clickCondition()">{{entry.buttonText}} <span class="badge" >{{entry.getCostFunction()}}</span> <span class="tooltip"> {{entry.toolTip}}</span></button> 
+
+					</div>
+				</div>			
 			<ul class="nav nav-tabs">
 				<li class="active"><a data-toggle="tab" href="#selfTab">Self</a></li>
 				<li ng-show="classTabUnlocked"><a data-toggle="tab" href="#classTab">Classes</a></li>  
@@ -41,16 +49,16 @@
 					<h4 >Penny: {{getPennyCount()}} ({{getPennyRate()}}/sec)</h4>
 					<h4 ng-show="pencilUnlocked">Pencil: {{getPencilCount()}} </h4>
 					<h4 ng-show="bookUnlocked">Book: {{getBookCount()}} </h4>
-					<h4 ng-show="knowledgeUnlocked"> Knowledge: {{getKnowledgeCount()}} ({{getKnowledgeRate()}}/sec) </h4>	
+					<h4 ng-show="knowledgeUnlocked"> Knowledge: {{getKnowledgeCount()}} ({{getKnowledgeRate()}}/sec) </h4>						
 				</div>
 				<div class="col-md-4">
 					<div class="tab-content">
 						<div id="selfTab" class="tab-pane fade in active">
-								<button  class="btn btn-primary" ng-click="increasePennyCount()" data-toggle="tooltip" data-placement="left" title="{{pennyTooltip}}">Go find one Penny</button> 
+								<button  class="btn btn-primary tooltip-button" ng-click="increasePennyCount()" >Go find one Penny <span class="tooltip">tooltip text </span> </button> 
 								
-								<button class="btn" ng-class="getPennyCount()>9 ? 'btn-primary': 'btn-default'" ng-show="pencilUnlocked" ng-click="increasePencilCount()" data-toggle="tooltip" data-placement="left" title="{{pencilTooltip}}">Buy pencil <span class="badge">{{getPencilCount()}}</span></button> 
+								<button class="btn tooltip-button" ng-class="getPennyCount()>=getPencilCost() ? 'btn-primary': 'btn-default'" ng-show="pencilUnlocked" ng-click="increasePencilCount()">Buy pencil <span class="badge">{{getPencilCost()}} penny</span> <span class="tooltip">Always good to take notes in college </span></button> 
 								
-								<button class="btn" ng-class="getPennyCount()>19 ? 'btn-primary': 'btn-default'" ng-show="bookUnlocked" ng-click="increaseBookCount()" data-toggle="tooltip" data-placement="left" title="{{bookTooltip}}">Buy book <span class="badge">{{getBookCount()}}</span></button>
+								<button class="btn" ng-class="getPennyCount()>= getBookCost() ? 'btn-primary': 'btn-default'" ng-show="bookUnlocked" ng-click="increaseBookCount()" data-toggle="tooltip" data-placement="left" title="Textbooks are always overpriced and I couldn't find a pdf online">Buy book <span class="badge">{{getBookCost()}} penny</span></button>
 						</div>
 						<div id="classTab" class="tab-pane fade">	
 							<div class="panel panel-primary" ng-show="cs142Unlocked">
@@ -58,11 +66,11 @@
 									<h5> CS 142 <span class="badge">{{getCS142Count()}}</span> </h5>
 								</div>
 								<div class="panel-body">
-									<button  class="btn" ng-class="getBookCount()>=10 ? 'btn-success': 'btn-default'" ng-click="classCS142()" data-toggle="tooltip" data-placement="left" title="{{cs142Tooltip}}">Take CS 142</button> 
+									<button  class="btn" ng-class="getBookCount()>=getCS142Cost() ? 'btn-success': 'btn-default'" ng-click="classCS142()" data-toggle="tooltip" data-placement="left" title="The second most failed class in college. Reward: 0.12 knowledge/sec">Take CS 142  <span class="badge">{{getCS142Cost()}} book</span></button> 
 								
-									<button class="btn" ng-class="cs142CanStudy() == true ? 'btn-success': 'btn-default'" ng-click="classCS142Study()" data-toggle="tooltip" data-placement="left" title="{{cs142StudyTooltip}}" >Do Bubble Sort Lab </button>
+									<button class="btn" ng-class="cs142CanStudy() == true ? 'btn-success': 'btn-default'" ng-click="classCS142Study()" data-toggle="tooltip" data-placement="left" title="Or trade it to your friend for magic cards. Reward: 10 Knowledge" >Do Bubble Sort Lab  <span class="badge">{{getCS142StudyCost()}} pencil</span> </button>
 								
-									<button class="btn" ng-class="cs142CanFinal() == true ? 'btn-success': 'btn-default'" ng-click="classCS142Final()" data-toggle="tooltip" data-placement="left" title="{{cs142FinalTooltip}}" >Take the Final </button>
+									<button class="btn" ng-class="cs142CanFinal() == true ? 'btn-success': 'btn-default'" ng-click="classCS142Final()" data-toggle="tooltip" data-placement="left" title="I love magic numbers. Reward 30 knowledge" >Take the Final  <span class="badge">{{getCS142FinalCost()}} pencil</span> </button>
 								</div>
 							  </div> 								
 							 <div class="panel panel-primary">
@@ -70,16 +78,25 @@
 									<h5> English 101 <span class="badge">{{getEng101Count()}}</span> </h5>
 								</div>
 								<div class="panel-body">
-									<button  class="btn" ng-class="getBookCount()>2 ? 'btn-success': 'btn-default'" ng-click="classEng101()" data-toggle="tooltip" data-placement="left" title="{{eng101Tooltip}}">Take ENG 101</button> 
+									<button  class="btn" ng-class="getBookCount()>= getEng101Cost() ? 'btn-success': 'btn-default'" ng-click="classEng101()" data-toggle="tooltip" data-placement="left" title="The first class of any respectable college student. Reward: 0.06 knowledge/sec">Take ENG 101 <span class="badge">{{getEng101Cost()}} book</span></button> 
 								
-									<button class="btn" ng-class="eng101CanStudy() == true ? 'btn-success': 'btn-default'" ng-click="classEng101Study()" data-toggle="tooltip" data-placement="left" title="{{eng101StudyTooltip}}" >Study "English" </button>
+									<button class="btn" ng-class="eng101CanStudy() == true ? 'btn-success': 'btn-default'" ng-click="classEng101Study()" data-toggle="tooltip" data-placement="left" title="As if I didn't already know enligsh. Reward: 1 Knowledge" >Study "English" <span class="badge">{{getEng101StudyCost()}} pencil</span> </button>
 								
-									<button class="btn" ng-class="eng101CanFinal() == true ? 'btn-success': 'btn-default'" ng-click="classEng101Final()" data-toggle="tooltip" data-placement="left" title="{{eng101FinalTooltip}}" >Take the Final </button>
+									<button class="btn" ng-class="eng101CanFinal() == true ? 'btn-success': 'btn-default'" ng-click="classEng101Final()" data-toggle="tooltip" data-placement="left" title="Do or do not, there is no try. Reward: 10 knowledge" >Take the Final  <span class="badge">{{getEng101FinalCost()}} pencil</span></button>
 								</div>
 							  </div>											
 						</div>	
-						<div id="jobTab" class="tab-pane fade">						
-								<button  class="btn" ng-class="getKnowledgeCount()>3 ? 'btn-primary': 'btn-default'" ng-click="jobBurgerFlipper()" data-toggle="tooltip" data-placement="left" title="{{jobBurgerFlipperTooltip}}">Burger Flipper</button> 
+						<div id="jobTab" class="tab-pane fade">										
+							 <div class="panel panel-primary">
+								<div class="panel-heading">
+										<button  class="btn" ng-class="getKnowledgeCount()>3 ? 'btn-primary': 'btn-default'" ng-click="jobBurgerFlipper()" data-toggle="tooltip" data-placement="left" title="Cost to apply: 3 knowledge">Apply at McDonalds <span class="badge">{{isMcdonaldsUnlocked()}}</span></button> 
+								</div>
+								<div class="panel-body">
+									<button  class="btn" ng-class="getKnowledgeCount()>3 ? 'btn-primary': 'btn-default'" ng-click="jobBurgerFlipper()" data-toggle="tooltip" data-placement="left" title="{{jobBurgerFlipperTooltip}}">Burger Flipper</button> 
+								
+			
+							  </div>	
+							  </div>	
 						</div>  
 						</div>
 				</div>
@@ -98,3 +115,4 @@
 
 	</body>
 </html>
+

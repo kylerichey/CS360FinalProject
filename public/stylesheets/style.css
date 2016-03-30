@@ -1,3 +1,5 @@
+
+
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -12,6 +14,9 @@ body {
 }
 
 
+.panel-heading button{
+	width:100%;
+}
 
 .panel-body button{
 	width:100%;
@@ -22,10 +27,18 @@ h5{
 	text-align: center;
 }
 
+
+
+		
+		
 .panel {
 	width:80%;
 	margin-bottom: 6px;
 }
+
+
+
+
 #console{
 	position:relative;
 	min-height:200px;
@@ -46,3 +59,61 @@ h5{
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ffffff', GradientType=0 );
 
 }
+.tooltip-button{
+	position:relative;
+}
+
+.tooltip-button > span.tooltip{
+  display:none;
+  position:absolute;
+  word-wrap:break-word;
+  white-space:normal;
+  bottom:0px;
+  z-index: 999;
+  opacity:0;
+  left:100%;
+  width:100%;
+  margin-bottom:-5px;
+  margin-left:30px;
+  padding: 10px;
+  border: 2px solid #1C6C8C;
+  background-color: rgb(51, 122, 183);
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.4), 0 1px 0 rgba(255,255,255,.5) inset;
+ /* text-shadow: 0 1px 0 rgba(255,255,255,.4);*/
+}
+
+.tooltip-button:hover > span.tooltip{
+  animation-duration: .3s;
+  animation-name: tooltip-animation;
+  display:block;
+  opacity:1;
+  margin-left:10px;
+}
+
+@keyframes tooltip-animation{
+  0% {display:none; opacity:0; margin-left:30px;}
+  1% {display:block; opacity:0; margin-left:30px;}
+  100% {display:block; opacity:1; margin-left:10px;}
+}
+
+/*.tooltip-button > span.tooltip:before,
+.tooltip-button > span.tooltip:after {
+  content: "";
+  position: absolute;
+  z-index: 1000;
+  bottom: -7px;
+  left: 50%;
+  margin-left: -8px;
+  border-top: 8px solid #C280C3;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 0;
+}
+
+.tooltip-button > span.tooltip:before {
+  border-top-color: #8D458E;
+  bottom: -8px;
+}
+
+*/
