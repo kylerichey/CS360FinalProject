@@ -30,11 +30,7 @@
 			<br>
 			<div id="test">
 					<h4> Output: </h4>
-					<div ng-repeat="entry in dynamicList | orderBy: '-number' | limitTo:15"> 
 					
-						<button class="btn tooltip-button" " ng-show="pencilUnlocked" ng-click="entry.clickCondition()">{{entry.buttonText}} <span class="badge" >{{entry.getCostFunction()}}</span> <span class="tooltip"> {{entry.toolTip}}</span></button> 
-
-					</div>
 				</div>			
 			<ul class="nav nav-tabs">
 				<li class="active"><a data-toggle="tab" href="#selfTab">Self</a></li>
@@ -53,38 +49,24 @@
 				</div>
 				<div class="col-md-4">
 					<div class="tab-content">
-						<div id="selfTab" class="tab-pane fade in active">
-								<button  class="btn btn-primary tooltip-button" ng-click="increasePennyCount()" >Go find one Penny <span class="tooltip">tooltip text </span> </button> 
-								
-								<button class="btn tooltip-button" ng-class="getPennyCount()>=getPencilCost() ? 'btn-primary': 'btn-default'" ng-show="pencilUnlocked" ng-click="increasePencilCount()">Buy pencil <span class="badge">{{getPencilCost()}} penny</span> <span class="tooltip">Always good to take notes in college </span></button> 
-								
-								<button class="btn" ng-class="getPennyCount()>= getBookCost() ? 'btn-primary': 'btn-default'" ng-show="bookUnlocked" ng-click="increaseBookCount()" data-toggle="tooltip" data-placement="left" title="Textbooks are always overpriced and I couldn't find a pdf online">Buy book <span class="badge">{{getBookCost()}} penny</span></button>
+						<div id="selfTab" class="tab-pane fade in active">						
+							<div ng-repeat="entry in selfButtonList"> 					
+								<button class="btn tooltip-button" ng-class="entry.colorCondition()" ng-show="entry.unlocked()" ng-click="entry.clickCondition()">{{entry.buttonText}} <span class="badge" >{{entry.getCostFunction()}}{{entry.getCostCurrency}}</span> <span class="tooltip"> {{entry.toolTip}}</span></button> 
+							</div>								
 						</div>
-						<div id="classTab" class="tab-pane fade">	
-							<div class="panel panel-primary" ng-show="cs142Unlocked">
-								<div class="panel-heading">
-									<h5> CS 142 <span class="badge">{{getCS142Count()}}</span> </h5>
-								</div>
-								<div class="panel-body">
-									<button  class="btn" ng-class="getBookCount()>=getCS142Cost() ? 'btn-success': 'btn-default'" ng-click="classCS142()" data-toggle="tooltip" data-placement="left" title="The second most failed class in college. Reward: 0.12 knowledge/sec">Take CS 142  <span class="badge">{{getCS142Cost()}} book</span></button> 
-								
-									<button class="btn" ng-class="cs142CanStudy() == true ? 'btn-success': 'btn-default'" ng-click="classCS142Study()" data-toggle="tooltip" data-placement="left" title="Or trade it to your friend for magic cards. Reward: 10 Knowledge" >Do Bubble Sort Lab  <span class="badge">{{getCS142StudyCost()}} pencil</span> </button>
-								
-									<button class="btn" ng-class="cs142CanFinal() == true ? 'btn-success': 'btn-default'" ng-click="classCS142Final()" data-toggle="tooltip" data-placement="left" title="I love magic numbers. Reward 30 knowledge" >Take the Final  <span class="badge">{{getCS142FinalCost()}} pencil</span> </button>
-								</div>
-							  </div> 								
-							 <div class="panel panel-primary">
-								<div class="panel-heading">
-									<h5> English 101 <span class="badge">{{getEng101Count()}}</span> </h5>
-								</div>
-								<div class="panel-body">
-									<button  class="btn" ng-class="getBookCount()>= getEng101Cost() ? 'btn-success': 'btn-default'" ng-click="classEng101()" data-toggle="tooltip" data-placement="left" title="The first class of any respectable college student. Reward: 0.06 knowledge/sec">Take ENG 101 <span class="badge">{{getEng101Cost()}} book</span></button> 
-								
-									<button class="btn" ng-class="eng101CanStudy() == true ? 'btn-success': 'btn-default'" ng-click="classEng101Study()" data-toggle="tooltip" data-placement="left" title="As if I didn't already know enligsh. Reward: 1 Knowledge" >Study "English" <span class="badge">{{getEng101StudyCost()}} pencil</span> </button>
-								
-									<button class="btn" ng-class="eng101CanFinal() == true ? 'btn-success': 'btn-default'" ng-click="classEng101Final()" data-toggle="tooltip" data-placement="left" title="Do or do not, there is no try. Reward: 10 knowledge" >Take the Final  <span class="badge">{{getEng101FinalCost()}} pencil</span></button>
-								</div>
-							  </div>											
+						<div id="classTab" class="tab-pane fade">
+							<div ng-repeat="entry in classButtonList"> 						
+								<div class="panel panel-primary" ng-show="entry.unlocked()">
+									<div class="panel-heading">
+										<h5> {{entry.className}} <span class="badge">{{entry.classCount()}}</span> </h5>
+									</div>
+									<div class="panel-body">
+										<div ng-repeat="bodyEntry in entry.body"> 
+											<button class="btn tooltip-button" ng-class="bodyEntry.colorCondition()" ng-show="true" ng-click="bodyEntry.clickCondition()">{{bodyEntry.buttonText}} <span class="badge" >{{bodyEntry.getCostFunction()}}{{bodyEntry.getCostCurrency}}</span> <span class="tooltip"> {{bodyEntry.toolTip}}</span></button>
+										</div>										
+									</div>
+							    </div>
+						  </div> 							
 						</div>	
 						<div id="jobTab" class="tab-pane fade">										
 							 <div class="panel panel-primary">

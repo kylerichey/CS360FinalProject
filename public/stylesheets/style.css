@@ -72,7 +72,7 @@ h5{
   z-index: 999;
   opacity:0;
   left:100%;
-  width:100%;
+  width:300px;
   margin-bottom:-5px;
   margin-left:30px;
   padding: 10px;
@@ -97,23 +97,4 @@ h5{
   100% {display:block; opacity:1; margin-left:10px;}
 }
 
-/*.tooltip-button > span.tooltip:before,
-.tooltip-button > span.tooltip:after {
-  content: "";
-  position: absolute;
-  z-index: 1000;
-  bottom: -7px;
-  left: 50%;
-  margin-left: -8px;
-  border-top: 8px solid #C280C3;
-  border-left: 8px solid transparent;
-  border-right: 8px solid transparent;
-  border-bottom: 0;
-}
 
-.tooltip-button > span.tooltip:before {
-  border-top-color: #8D458E;
-  bottom: -8px;
-}
-
-*/

@@ -118,6 +118,11 @@ function($scope,$http){
 	$scope.getPennyCount = function(){		
 		return Math.round($scope.pennyCount *100)/100;	
 	};
+	
+	$scope.pennyColorConditions = function (){
+		return "btn-primary";
+	};
+	
 
 	
 	/* ******************************************
@@ -152,7 +157,16 @@ function($scope,$http){
 	
 	$scope.getPencilCost = function (){		
 		return Math.round($scope.pencilCost);	
-	};		
+	};
+	
+	$scope.pencilColorConditions = function() {
+		return $scope.getPennyCount()>= $scope.getPencilCost() ? "btn-primary" : "btn-default" 		
+	};
+	
+	$scope.getPencilUnlocked = function (){
+		return $scope.pencilUnlocked;
+	};
+		
 
 	
 	/* ******************************************
@@ -189,7 +203,13 @@ function($scope,$http){
 		return Math.round($scope.bookCost);
 	}	
 
+	$scope.bookColorConditions = function() {
+		return $scope.getPennyCount()>= $scope.getBookCost() ? "btn-primary" : "btn-default" 		
+	};
 	
+	$scope.getBookUnlocked = function () {
+		return $scope.bookUnlocked;
+	};
 
 	
 	/* ******************************************
@@ -251,15 +271,8 @@ function($scope,$http){
 		}else{			
 			$scope.addEntryToConsole("You need to take Eng101 first");
 		}
-	};
-	
-	$scope.eng101CanStudy = function(){
-		if($scope.eng101Count>0 && $scope.pencilCount>= $scope.eng101StudyCost ){
-			return true;
-		}else{
-			return false;
-		}
 	};	
+
 	$scope.classEng101Final = function(){
 		if($scope.eng101Count>0){
 			if($scope.pencilCount>=$scope.eng101FinalCost){			 
@@ -272,14 +285,6 @@ function($scope,$http){
 			}
 		} else {			
 			$scope.addEntryToConsole("You need to take Eng101 first");
-		}
-	};
-	
-	$scope.eng101CanFinal = function(){
-		if($scope.eng101Count>0 && $scope.pencilCount>=$scope.eng101FinalCost ){
-			return true;
-		} else {
-		return false;
 		}
 	};
 	
@@ -298,7 +303,27 @@ function($scope,$http){
 	
 	$scope.getEng101FinalCost = function (){
 		return Math.round($scope.eng101FinalCost );
-	}	
+	}
+
+	$scope.eng101ColorConditions = function(){
+			return $scope.getBookCount()>= $scope.getEng101Cost() ? "btn-success": "btn-default"
+		};	
+	
+	$scope.eng101StudyColorConditions = function(){
+		if($scope.eng101Count>0 && $scope.pencilCount>= $scope.eng101StudyCost ){
+			return "btn-success";
+		}else{
+			return "btn-default";
+		}
+	};
+	
+	$scope.eng101FinalColorConditions = function(){
+		if($scope.eng101Count>0 && $scope.pencilCount>= $scope.eng101FinalCost ){
+			return "btn-success";
+		}else{
+			return "btn-default";
+		}
+	};	
 
 	
 	/* ******************************************
@@ -385,6 +410,30 @@ function($scope,$http){
 		return Math.round($scope.cs142FinalCost);
 	};
 	
+	$scope.getCS142Unlocked = function (){
+		return $scope.cs142Unlocked;
+	};
+	
+	$scope.cs142ColorConditions = function(){
+		return $scope.getBookCount()>= $scope.getCS142Cost() ? "btn-success": "btn-default"
+	};	
+	
+	$scope.cs142StudyColorConditions = function(){
+		if($scope.cs142Count>0 && $scope.pencilCount>= $scope.cs142StudyCost ){
+			return "btn-success";
+		}else{
+			return "btn-default";
+		}
+	};
+	
+	$scope.cs142FinalColorConditions = function(){
+		if($scope.cs142Count>0 && $scope.pencilCount>= $scope.cs142FinalCost ){
+			return "btn-success";
+		}else{
+			return "btn-default";
+		}
+	};
+	
 	/* ******************************************
 	******** *Jobs   ************************
 	*********************************************/	
@@ -422,40 +471,108 @@ function($scope,$http){
 
 	/* ******************************************
 	******** *Dynamic content filler ********************
-	*********************************************/	
+	*********************************************/		
 	
-	$scope.dynamicEntryCount = 1;
 	
-	$scope.pencilColorConditions = function() {
-		//$scope.getPennyCount()>= $scope.getPencilCost() ? "'btn-primary'" : "'btn-default'" 
-		if($scope.getPennyCount()>= $scope.getPencilCost())
-		{
-			return "btn-primary"
-		} else{
-			return "btn-default";
-		}
+	
+	
+		/* ******************************************
+	******** *Self Button List ********************
+	*********************************************/
+	$scope.selfButtonList = [
+		//Penny
+		{buttonText:'Go find one Penny',
+		getCostFunction: null, 
+		getCostCurrency: null,
+		toolTip: "Oh look a penny!", 
+		colorCondition: $scope.pennyColorConditions,
+		clickCondition: $scope.increasePennyCount,
+		unlocked: true,
+		},			
+		//Pencil
+		{buttonText:'Buy pencil',
+		getCostFunction: $scope.getPencilCost, 
+		getCostCurrency: " penny",
+		toolTip: "Always good to take notes in college", 
+		colorCondition: $scope.pencilColorConditions,
+		clickCondition: $scope.increasePencilCount,
+		unlocked: $scope.getPencilUnlocked,
+		},
+		//Book
+		{buttonText:'Buy book',
+		getCostFunction: $scope.getBookCost, 
+		getCostCurrency: " penny",
+		toolTip: "Textbooks are always overpriced and I couldn't find a pdf online", 
+		colorCondition: $scope.bookColorConditions,
+		clickCondition: $scope.increaseBookCount,
+		unlocked: $scope.getBookUnlocked,
+		}				
+	];
 		
-		
-	};
-	
-	$scope.addEntryToDynamic = function(buttonText){
-		$scope.dynamicEntryCount = $scope.dynamicEntryCount +1;
-		
-		$scope.dynamicList.push({buttonText:buttonText, number:$scope.dynamicEntryCount}); 	
-		};
-		//Default user console value
-		$scope.dynamicList = [
-			{buttonText:'Buy pencil',
-			getCostFunction: $scope.getPencilCost, 
-			toolTip: "Always good to take notes in college.", 
-			colorCondition: $scope.pencilColorConditions,
-			clickCondition: $scope.increasePencilCount,
-			number:0}	
-			
-			//getPennyCount()>=getPencilCost() ? 'btn-primary': 
-		];
-	
+	/* ******************************************
+	******** *Class List ********************
+	*********************************************/		
 
+	$scope.classButtonList =[
+		//English 101
+		{	className: "English 101",
+			unlocked: true,
+			classCount: $scope.getEng101Count,
+			body:[ 
+				{	buttonText:"Take ENG 101",
+					toolTip: "The first class of any respectable college student. Reward: 0.06 knowledge/sec", 
+					getCostFunction: $scope.getEng101Cost, 
+					getCostCurrency: " book",
+					clickCondition: $scope.classEng101,					
+					colorCondition: $scope.eng101ColorConditions,
+				},
+				{	buttonText:'Study "English"',
+					toolTip: "As if I didn't already know enligsh. Reward: 1 Knowledge", 
+					getCostFunction: $scope.getEng101StudyCost, 
+					getCostCurrency: " pencil",
+					clickCondition: $scope.classEng101Study,					
+					colorCondition: $scope.eng101StudyColorConditions,
+				},
+				{	buttonText:'Take the Final"',
+					toolTip: "Do or do not, there is no try. Reward: 10 knowledge", 
+					getCostFunction: $scope.getEng101FinalCost, 
+					getCostCurrency: " pencil",
+					clickCondition: $scope.classEng101Final,					
+					colorCondition: $scope.eng101FinalColorConditions,
+				}
+			]				
+		},
+			//CS142
+		{	className: "CS 142",
+			unlocked: $scope.getCS142Unlocked,
+			classCount: $scope.getCS142Count,
+			body:[ 
+				{	buttonText:"Take CS 142",
+					toolTip: "The second most failed class in college. Reward: 0.12 knowledge/sec", 
+					getCostFunction: $scope.getCS142Cost, 
+					getCostCurrency: " book",
+					clickCondition: $scope.classCS142,					
+					colorCondition: $scope.cs142ColorConditions,
+				},
+				{	buttonText:"Do Bubble Sort Lab",
+					toolTip: "Or trade it to your friend for magic cards. Reward: 10 Knowledge", 
+					getCostFunction: $scope.getCS142StudyCost, 
+					getCostCurrency: " pencil",
+					clickCondition: $scope.classCS142Study,					
+					colorCondition: $scope.cs142StudyColorConditions,
+				},
+				{	buttonText:'Take the Final"',
+					toolTip: "I love magic numbers. Reward 30 knowledge", 
+					getCostFunction: $scope.getCS142FinalCost, 
+					getCostCurrency: " pencil",
+					clickCondition: $scope.classCS142Final,					
+					colorCondition: $scope.cs142FinalColorConditions,
+				}
+			]				
+		},
+	];		
+
+	
 	
 	// End of main function
 	} 
