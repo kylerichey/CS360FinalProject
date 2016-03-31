@@ -30,18 +30,24 @@
 			<br>				
 			<ul class="nav nav-tabs">
 				<li class="active"><a data-toggle="tab" href="#selfTab">Self</a></li>
+				<li ng-show="classTabUnlocked"><a data-toggle="tab" href="#sideJobTab">Side Jobs</a></li>  
 				<li ng-show="classTabUnlocked"><a data-toggle="tab" href="#classTab">Classes</a></li>  
-				<li ng-show="jobsTabUnlocked"><a data-toggle="tab" href="#jobTab">Jobs</a></li>      
+				<li ng-show="jobsTabUnlocked"><a data-toggle="tab" href="#jobTab">Employment</a></li>      
 			</ul>	
 			<br>			
 			<div class="row">
 				<div class="col-md-4">
-					<h4>Name: {{getPlayerName()}}
-					<h4>Body Type: {{getPlayerBodyLevel()}}
-					<h4 >Penny: {{getPennyCount()}} ({{getPennyRate()}}/sec)</h4>
-					<h4 ng-show="pencilUnlocked">Pencil: {{getPencilCount()}} </h4>
-					<h4 ng-show="bookUnlocked">Book: {{getBookCount()}} </h4>
-					<h4 ng-show="knowledgeUnlocked"> Knowledge: {{getKnowledgeCount()}} ({{getKnowledgeRate()}}/sec) </h4>						
+					<h4> Name: {{getPlayerName()}}</h4>
+					<h4> Date: {{getDate()}}</h4>
+					 <div class="progress" ng-show="true">
+						<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{getPlayerEnergy()}}" aria-valuemin="0" aria-valuemax="100" style="width:{{getPlayerEnergy()}}%">
+							Energy:{{getPlayerEnergy()}}%
+						</div>
+					</div>	
+						
+					<div ng-repeat="entry in selfCurrencyList">
+						<h4 ng-show="entry.unlocked()">{{entry.title}}<span ng-show="entry.showCount">: {{entry.count()}} </span> <span ng-show="entry.showRate"> ({{entry.rate()}}/sec) </span> </h4>
+					</div>										
 				</div>
 				<div class="col-md-4">
 					<div class="tab-content">
@@ -49,6 +55,11 @@
 							<div ng-repeat="entry in selfButtonList"> 					
 								<button class="btn tooltip-button" ng-class="entry.colorCondition()" ng-show="entry.unlocked()" ng-click="entry.clickCondition()">{{entry.buttonText}} <span class="badge" >{{entry.getCostFunction()}}{{entry.getCostCurrency}}</span> <span class="tooltip"> {{entry.toolTip}}</span></button> 
 							</div>								
+						</div>
+						<div id="sideJobTab" class="tab-pane fade">						
+							<div ng-repeat="entry in sideJobsList"> 	
+								<button class="btn tooltip-button" ng-click="entry.clickCondition()">{{entry.buttonText}}  <span class="tooltip"> {{entry.toolTip}}</span></button>
+							</div>
 						</div>
 						<div id="classTab" class="tab-pane fade">
 							<div ng-repeat="entry in classButtonList"> 						
@@ -62,6 +73,7 @@
 										</div>										
 									</div>
 							    </div>
+								<br>
 						  </div> 							
 						</div>	
 						<div id="jobTab" class="tab-pane fade">	
@@ -82,6 +94,7 @@
 										</div>																					
 									</div>
 							    </div>
+								<br>
 							</div> 							
 						</div>  
 					</div>
