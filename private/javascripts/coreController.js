@@ -61,6 +61,8 @@ function($scope,$http){
 		};
 	}
 
+	
+	/******Save/Load User State*********/
 	// Save user state to DB
 	$scope.saveUserState = function() {
 		
@@ -118,7 +120,57 @@ function($scope,$http){
 				console.log(err);
 			}
 		);
-	}		
+	}
+
+	// Load User state from DB
+	$scope.loadUserState = function() {
+		 
+		$http.get("/users/me", {withCredentials: true})
+		.then(
+			function success(data) {
+				console.log(data);
+				user = data.data;
+				$scope.playerName = user.username;
+				$scope.playerBodyLevel = user.body_type;
+				$scope.pennyRate = user.game.penny.rate;
+				$scope.pennyCount = user.game.penny.count;
+				$scope.pencilRate = user.game.pencil.rate;
+				$scope.pencilCount = user.game.pencil.count;
+				$scope.pencilUnlocked = user.game.pencil.unlocked;
+				$scope.pencilCost = user.game.pencil.cost;
+				$scope.bookCount = user.game.book.count;
+				$scope.bookRate = user.game.book.rate;
+				$scope.bookUnlocked = user.game.book.unlocked;
+				$scope.bookCost = user.game.book.cost;
+				$scope.knowledgeRate = user.game.knowledge.rate;
+				$scope.knowledgeCount = user.game.knowledge.count;
+				$scope.knowledgeUnlocked = user.game.knowledge.unlocked;
+				
+				$scope.eng101Count = user.game.eng101.count;
+				$scope.eng101Unlocked = user.game.eng101.unlocked;
+				$scope.eng101Cost = user.game.eng101.cost;
+				$scope.eng101StudyCost = user.game.eng101.studyCost;
+				$scope.eng101FinalCost = user.game.eng101.finalCost;
+				
+				$scope.cs142Count = user.game.cs142.count;
+				$scope.cs142Unlocked = user.game.cs142.unlocked;
+				$scope.cs142Cost = user.game.cs142.cost;
+				$scope.cs142StudyCost = user.game.cs142.studyCost;
+				$scope.cs142FinalCost = user.game.cs142.finalCost;
+				
+				$scope.jobsTabUnlocked = user.game.jobsTabUnlocked;
+				$scope.jobPennyRate = user.game.jobPennyRate;
+			}, 
+			function error(err) {
+				console.log("Error. Game could not be loaded");
+				console.log(err);
+				$scope.playerName = "ERROR!";
+				$scope.playerBodyLevel = "ERROR!";
+			}	
+		);
+	}
+
+	/******************************************/
 
 	//TimeStamp
 	// Gets time for console timestamps output
