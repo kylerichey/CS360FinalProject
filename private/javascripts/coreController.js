@@ -70,7 +70,7 @@ function($scope,$http){
 				rate: $scope.pennyRate,
 				count: $scope.pennyCount,
 				unlocked: $scope.pennyUnlocked,
-				cost: 1
+				cost: 0
 			},
 			pencil: {
 				rate: $scope.pencilRate,
@@ -83,7 +83,29 @@ function($scope,$http){
 				count: $scope.bookCount,
 				unlocked: $scope.bookUnlocked,
 				cost: $scope.bookCost
-			}
+			},
+			knowledge: {
+				rate: $scope.knowledgeRate,
+				count: $scope.knowledgeCount,
+				unlocked: $scope.knowledgeUnlocked,
+				cost: 0
+			},
+			eng101: {
+				count: $scope.eng101Count,
+				unlocked: $scope.eng101Unlocked,
+				cost: $scope.eng101Cost,
+				studyCost: $scope.eng101StudyCost,
+				finalCost: $scope.eng101FinalCost
+			},
+			cs142: {
+				count: $scope.cs142Count,
+				unlocked: $scope.cs142Unlocked,
+				cost: $scope.cs142Cost,
+				studyCost: $scope.cs142StudyCost,
+				finalCost: $scope.cs142FinalCost
+			},
+			jobsTabUnlocked: $scope.jobsTabUnlocked,
+			jobPennyRate: $scope.jobPennyRate		
 		}
 		$http.post("/users/update", {withCredentials: true, game: myGame})
 		.then(

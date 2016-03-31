@@ -6,6 +6,15 @@ var currency = {
         unlocked: Boolean,
         cost: Number
 }
+
+var job = {
+	count: Number,
+	unlocked: Boolean,
+	cost: Number,
+	studyCost: Number,
+	finalCost: Number
+}
+
 var UserSchema = new Schema({
     username: { type: String, unique: true },
     hashed_password: String,
@@ -16,11 +25,10 @@ var UserSchema = new Schema({
         pencil: {__proto__:currency},
         book: {__proto__:currency},
         knowledge: {__proto__:currency},
-        classes: {
-                english101: Number,
-                cs142: Number
-        },
-        job: Number
-}
+    	eng101: {__proto__:job},
+	cs142: {__proto__:job},
+        jobPennyRate: Number,
+	jobsTabUnlocked: Boolean
+	}
 });
 mongoose.model('User', UserSchema);
