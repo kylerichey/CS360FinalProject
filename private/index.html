@@ -20,11 +20,14 @@
 	<body  ng-controller="coreController"> 		
 		<div class="container" >
 			<div class="row">
-				<div class="col-md-11">
+				<div class="col-md-10">
 					<h2>The Student Game</h2>					
 				</div>
 				<div class="col-md-1">
-						<a href="/login" class="btn btn-primary">Logout</a>
+					<button ng-click="saveUserState()">Save Game</button>
+				</div>
+				<div class="col-md-1">
+					<a href="/login" class="btn btn-primary">Logout</a>
 				</div>
 			</div>	
 			<br>

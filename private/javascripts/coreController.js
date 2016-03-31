@@ -44,6 +44,43 @@ function($scope,$http){
 			});
 		}
 
+	// Save user state to DB
+	$scope.saveUserState = function() {
+		
+		var myGame = {
+			name: $scope.playerName,
+			penny: {
+				rate: $scope.pennyRate,
+				count: $scope.pennyCount,
+				unlocked: $scope.pennyUnlocked,
+				cost: 1
+			},
+			pencil: {
+				rate: $scope.pencilRate,
+				count: $scope.pencilCount,
+				unlocked: $scope.pencilUnlocked,
+				cost: $scope.pencilCost				
+			},
+			book: {
+				rate: $scope.bookRate,
+				count: $scope.bookCount,
+				unlocked: $scope.bookUnlocked,
+				cost: $scope.bookCost
+			}
+		}
+		$http.post("/users/update", {withCredentials: true, game: myGame})
+		.then(
+			function success(data) {
+				console.log("SUCCESS");
+				console.log(data);
+			},
+			function error(err) {
+				console.log("ERROR");
+				console.log(err);
+			}
+		);
+	}		
+
 	//TimeStamp
 	// Gets time for console timestamps output
 	$scope.getDatetime = function() {

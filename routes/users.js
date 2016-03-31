@@ -93,6 +93,34 @@ router.post('/logout', function(req, res, next) {
     
 });
 
-router
+router.post('/update', function(req, res, next) {
+        console.log(req.body.game);
+	if (req.session.user && (req.body.game != null)) {
+                var query = {_id: req.session.user};
+                var update = {$set: {game: req.body.game}};
+                var options;
+                User.update(query, update, options, function(err, numAffected) {
+                        if (err) {
+				console.log("Mongo save error");
+                                res.send(err);
+                        } else if (numAffected > 1) {
+				console.log("Save error. Too many affected");
+                                res.send(new Error("Error: More than one DB entry updated"));
+                        } else if (numAffected == 0) {
+				console.log("Save error. No user found.");
+                                res.send(new Error("Error: No user found with given ID"));
+                        } else {
+                                res.send("SUCCESS");
+                        }
+                });
+        } else if (req.body.game == null) {
+ 		console.log("Game state is null");
+		res.send("game is null");
+	}
+	else {
+                res.send({error: "Not logged in"});
+        }
+});
+
 
 module.exports = router;
