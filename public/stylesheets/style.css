@@ -69,6 +69,7 @@ h5{
   word-wrap:break-word;
   white-space:normal;
   bottom:0px;
+  color:white;
   z-index: 999;
   opacity:0;
   left:100%;
@@ -97,4 +98,10 @@ h5{
   100% {display:block; opacity:1; margin-left:10px;}
 }
 
+div.progress{
+	margin-bottom:0px;
+}
 
+div.progress-bar{
+	color:black;
+}

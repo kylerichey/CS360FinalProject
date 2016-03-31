@@ -15,6 +15,10 @@ Core game play JavaScript
 		* CS 142
 	* Jobs
 		* Burger Flipper
+	*Dynamic Html Generator List
+		* Self
+		* Classes
+		* Jobs
 */
 
 angular.module('studentGame', []) 
@@ -28,10 +32,12 @@ function($scope,$http){
 
 	var tickTimerVar = setInterval(tickTimer, 100);		
 	function tickTimer() {	
+		$scope.pennyRate = $scope.jobPennyRate;  //if need to add new way to get penny add here
 		$scope.pennyCount =  $scope.pennyCount + $scope.pennyRate;	
 		$scope.knowledgeCount = $scope.knowledgeCount + $scope.knowledgeRate;
-		}
-
+		
+		$scope.updateJobProgressBars();		
+	};
 	/* ******************************************
 	******** * Misc Functions ******************	
 	*********************************************/	
@@ -474,44 +480,199 @@ function($scope,$http){
 	/* ******************************************
 	******** *Jobs   ************************
 	*********************************************/	
-	$scope.jobsTabUnlocked = false;
-	$scope.isCurrentlyWorking = false;
+	$scope.jobsTabUnlocked = false;	
+	$scope.jobPennyRate = 0;	
 	
+	$scope.resetCurrentJob = function()
+	{		
+		$scope.workingAsMcdonaldsBurgerFlipper = false;
+		$scope.workingAsMcdonaldsCashier = false;
+		$scope.workingAsMcdonaldsShiftManager = false;
+		$scope.mcdonaldsShiftManagerUnlocked = false;
+			
+	};
+	
+	
+	$scope.updateJobProgressBars = function (){
+		
+		if($scope.workingAsMcdonaldsBurgerFlipper && $scope.mcdonaldsProgress <= 100){			
+			$scope.mcdonaldsProgress += 0.502;
+			};
+		if($scope.workingAsMcdonaldsCashier && $scope.mcdonaldsProgress <= 100){			
+			$scope.mcdonaldsProgress += 0.04;
+			};
+		if($scope.workingAsMcdonaldsShiftManager && $scope.mcdonaldsProgress <= 100){			
+			$scope.mcdonaldsProgress += 0.08;
+			};
+		if($scope.workingAsMcdonaldsManager && $scope.mcdonaldsProgress <= 100){			
+			$scope.mcdonaldsProgress += 0.16;
+			};
+		if(!$scope.mcdonaldsShiftManagerUnlocked && $scope.mcdonaldsProgress >= 25 ){
+				$scope.mcdonaldsShiftManagerUnlocked = true;
+			};	
+		if(!$scope.mcdonaldsManagerUnlocked && $scope.mcdonaldsProgress >= 50 ){
+				$scope.mcdonaldsManagerUnlocked = true;
+			};				
+		if($scope.mcdonaldsProgress > 100){
+			$scope.mcdonaldsProgress = 100;
+		};
+		
+	};
+
 	/* ******************************************
-	******** *Burger Flipper  ********************
+	******** *McDonalds  ********************
 	*********************************************/	
 	
-	$scope.mcdonaldsUnlocked = false;
-	$scope.jobBurgerFlipperTooltip = "Pretty much the only job someone as dumb as you could get. Cost: 3 knowledge Reward: 1 penny per hour";
+	$scope.mcdonaldsHired = false;
+	$scope.mcdonaldsJobListUnlocked =false;
+	$scope.mcdonaldsProgress = 0;
+	$scope.mcdonaldsShiftManagerUnlocked = false;
+	$scope.mcdonaldsManagerUnlocked = false;
 	
-	$scope.mcdonalds
-	
-	$scope.jobBurgerFlipper = function(){		
-		if($scope.knowledgeCount>=3){
-			$scope.mcdonaldsUnlocked = true;
-			$scope.knowledgeCount = $scope.knowledgeCount - 3;
-			$scope.pennyRate = 	$scope.pennyRate+ 0.006;	
+	$scope.applyMcdonalds = function (){	
+		if (!$scope.mcdonaldsHired){
+			if($scope.knowledgeCount>=3){
+				$scope.mcdonaldsHired = true;
+					$scope.mcdonaldsJobListUnlocked =true;
+				$scope.knowledgeCount = $scope.knowledgeCount - 3;
+				
+			} else {
+					$scope.addEntryToConsole("Not enough knowledge to work there");			 
+				}
 		} else {
-				$scope.addEntryToConsole("Not enough knowledge to work there");			 
-			}	
+			$scope.addEntryToConsole("You don't need to apply again");		
+		}
+	};
+	
+		$scope.mcdonaldsColorConditions = function(){
+			if ($scope.mcdonaldsHired ) {
+				return "btn-primary";
+			}else if($scope.knowledgeCount>=3){
+				return "btn-success";
+			}else{
+				return "btn-default";
+			}
+			
 	};
 	  
-	  $scope.isMcdonaldsUnlocked = function () {
-		  if($scope.mcdonaldsUnlocked)
+	  $scope.getMcdonaldsHired = function () {
+		  if($scope.mcdonaldsHired)
 		  {
 			 return "Hired"; 
 		  } else {
-			  return " ";
+			  return null;
 		  }
 	  };
-
+	  
+	  $scope.mcdonaldsBurgerFlipper= function(){		 
+		$scope.resetCurrentJob();
+		$scope.workingAsMcdonaldsBurgerFlipper = true;
+		 
+		$scope.jobPennyRate = 0.006;		  
+	  };
+	  
+	  
+	  $scope.mcdonaldsCashier= function(){
+		  if($scope.mcdonaldsProgress>=25){
+				$scope.resetCurrentJob();
+				$scope.workingAsMcdonaldsCashier = true;
+				
+				$scope.jobPennyRate = 0.012;
+		  }	else {
+			  $scope.addEntryToConsole("You need more xp to do that job");	
+		  }	
+	  };	  
+	  	
+	  $scope.mcdonaldsShiftManager= function(){
+		  if($scope.mcdonaldsProgress>=50){
+				$scope.resetCurrentJob();
+				$scope.workingAsMcdonaldsShiftManager = true;
+				
+				$scope.jobPennyRate = 0.024;
+		  }	else {
+			  $scope.addEntryToConsole("You need more xp to do that job");	
+		  }	
+	  };	  
+	  	  	
+  $scope.mcdonaldsShiftManagerColorCondition= function(){	 
+	  if($scope.workingAsMcdonaldsShiftManager)
+	  {
+		  return "btn-success";
+	  } else if ($scope.mcdonaldsProgress>50){
+		    return "btn-primary"
+	  } else {
+		  return "btn-default";  
+	  }
+	
+  };
+  
+  
+  $scope.mcdonaldsManager= function(){
+		  if($scope.mcdonaldsProgress>=75){
+				$scope.resetCurrentJob();
+				$scope.workingAsMcdonaldsManager = true;
+				
+				$scope.jobPennyRate = 0.050;
+		  }	else {
+			  $scope.addEntryToConsole("You need more xp to do that job");	
+		  }	
+	  };	  
+	  	  	
+  $scope.mcdonaldsManagerColorCondition= function(){	 
+	  if($scope.workingAsMcdonaldsManager)
+	  {
+		  return "btn-success";
+	  } else if ($scope.mcdonaldsProgress>75){
+		    return "btn-primary"
+	  } else {
+		  return "btn-default";  
+	  }
+	
+  };
+		
+  $scope.mcdonaldsBurgerFlipperColorCondition= function(){
+	  
+	  if($scope.workingAsMcdonaldsBurgerFlipper)
+	  {
+		  return "btn-success";
+	  } else {
+		  return "btn-primary";  
+	  }
+	
+  };	
+		
+  $scope.mcdonaldsCashierColorCondition= function(){	 
+	  if($scope.workingAsMcdonaldsCashier)
+	  {
+		  return "btn-success";
+	  } else if ($scope.mcdonaldsProgress>25){
+		    return "btn-primary"
+	  } else {
+		  return "btn-default";  
+	  }
+	
+  };
+  
+	  $scope.getMcdonaldsProgressRound = function (){
+		  return Math.round($scope.mcdonaldsProgress * 10)/10;
+	  };
+	  
+	  $scope.getMcdonaldsJobListUnlocked = function (){
+		return $scope.mcdonaldsJobListUnlocked;
+	}
+	
+	$scope.getMcdonaldsShiftManagerUnlocked = function (){
+		return $scope.mcdonaldsShiftManagerUnlocked;
+	};
+	
+	$scope.getMcdonaldsManagerUnlocked = function (){
+		return $scope.mcdonaldsManagerUnlocked;
+	};
+		
 
 	/* ******************************************
 	******** *Dynamic content filler ********************
 	*********************************************/		
-	
-	
-	
 	
 		/* ******************************************
 	******** *Self Button List ********************
@@ -610,6 +771,52 @@ function($scope,$http){
 	];		
 
 	
+		/* ******************************************
+	******** *Jobs List ********************
+	*********************************************/	
+		$scope.jobButtonList =[
+		//Mcdonalds
+		{
+			buttonText:"Apply at McDonalds",
+			unlocked: true,
+			hired: $scope.getMcdonaldsHired,
+			jobListUnlocked:$scope.getMcdonaldsJobListUnlocked,
+			toolTip:"It doesn't get much worse than here. Cost to apply: 3 knowledge",			
+			clickCondition: $scope.applyMcdonalds,
+			colorCondition: $scope.mcdonaldsColorConditions,			
+			progress: $scope.getMcdonaldsProgressRound,
+			body:[
+				{	jobName:"Burger Flipper ",
+					toolTip: "It could be worse right?",
+					colorCondition:$scope.mcdonaldsBurgerFlipperColorCondition,
+					unlocked:true,
+					clickCondition: $scope.mcdonaldsBurgerFlipper,
+					reward: "0.06 p/s",
+				},
+				{	jobName:"Cashier ",
+					toolTip: "If I keep demanding 15/hr they're gonna replace me with a touchscreen. Requires 25% XP",
+					colorCondition:$scope.mcdonaldsCashierColorCondition,
+					unlocked:true,
+					clickCondition: $scope.mcdonaldsCashier,
+					reward:"0.12 p/s",
+				},
+				{	jobName:"Shift Manager ",
+					toolTip: "I'm the third most important person in my company. Too bad there are only 3 of us. Requires 50% XP",
+					colorCondition:$scope.mcdonaldsShiftManagerColorCondition,
+					unlocked:$scope.getMcdonaldsShiftManagerUnlocked,
+					clickCondition: $scope.mcdonaldsShiftManager,
+					reward:"0.24 p/s",
+				},
+				{	jobName:"Manager ",
+					toolTip: "Bossing around 15 year olds makes me feel important. Requires 75% XP",
+					colorCondition:$scope.mcdonaldsManagerColorCondition,
+					unlocked:$scope.getMcdonaldsManagerUnlocked,
+					clickCondition: $scope.mcdonaldsManager,
+					reward:"0.50 p/s",
+				}				
+			]
+		},
+		];
 	
 	// End of main function
 	} 
