@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html ng-app="studentGame">
-	<head>		
+<html lang="en" ng-app="studentGame">
+	<head>
+		<meta charset="utf-8">	
 		 <meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">	
 		<link rel="stylesheet" href="/stylesheets/style.css">
@@ -9,11 +10,7 @@
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"> </script>			
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>			
 		<script src="javascripts/coreController.js"></script>					
-		<script>
-			$(document).ready(function(){
-				$('[data-toggle="tooltip"]').tooltip();   
-			});
-		</script>
+		
 		<title>CS 360 Final Project - The Student Game</title>
 	</head>	
 	
@@ -27,11 +24,7 @@
 						<a href="/login" class="btn btn-primary">Logout</a>
 				</div>
 			</div>	
-			<br>
-			<div id="test">
-					<h4> Output: </h4>
-					
-				</div>			
+			<br>				
 			<ul class="nav nav-tabs">
 				<li class="active"><a data-toggle="tab" href="#selfTab">Self</a></li>
 				<li ng-show="classTabUnlocked"><a data-toggle="tab" href="#classTab">Classes</a></li>  
@@ -68,19 +61,27 @@
 							    </div>
 						  </div> 							
 						</div>	
-						<div id="jobTab" class="tab-pane fade">										
-							 <div class="panel panel-primary">
-								<div class="panel-heading">
-										<button  class="btn" ng-class="getKnowledgeCount()>3 ? 'btn-primary': 'btn-default'" ng-click="jobBurgerFlipper()" data-toggle="tooltip" data-placement="left" title="Cost to apply: 3 knowledge">Apply at McDonalds <span class="badge">{{isMcdonaldsUnlocked()}}</span></button> 
-								</div>
-								<div class="panel-body">
-									<button  class="btn" ng-class="getKnowledgeCount()>3 ? 'btn-primary': 'btn-default'" ng-click="jobBurgerFlipper()" data-toggle="tooltip" data-placement="left" title="{{jobBurgerFlipperTooltip}}">Burger Flipper</button> 
-								
-			
-							  </div>	
-							  </div>	
+						<div id="jobTab" class="tab-pane fade">	
+							<div ng-repeat="entry in jobButtonList"> 						
+								<div class="panel panel-primary" ng-show="entry.unlocked()">
+									<div class="panel-heading">
+										<button class="btn tooltip-button" ng-class="entry.colorCondition()" ng-show="true" ng-click="entry.clickCondition()">{{entry.buttonText}} <span class="badge" >{{entry.hired()}}</span> <span class="tooltip"> {{entry.toolTip}}</span></button> 
+										
+										  <div class="progress" ng-show="entry.jobListUnlocked()">
+											<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{entry.progress()}}" aria-valuemin="0" aria-valuemax="100" style="width:{{entry.progress()}}%">
+											{{entry.progress()}}%
+											</div>
+										</div>	
+									</div>
+									<div class="panel-body" ng-show="entry.jobListUnlocked()">
+										<div ng-repeat="bodyEntry in entry.body"> 
+											<button class="btn tooltip-button" ng-class="bodyEntry.colorCondition()" ng-show="bodyEntry.unlocked()" ng-click="bodyEntry.clickCondition()">{{bodyEntry.jobName}}<span class="badge" >{{bodyEntry.reward}}</span> <span class="tooltip"> {{bodyEntry.toolTip}}</span> </button>
+										</div>																					
+									</div>
+							    </div>
+							</div> 							
 						</div>  
-						</div>
+					</div>
 				</div>
 				<div id="console" class="col-md-4">
 					<h4> Output: </h4>
@@ -97,4 +98,3 @@
 
 	</body>
 </html>
-
