@@ -19,16 +19,83 @@ var UserSchema = new Schema({
     username: { type: String, unique: true },
     hashed_password: String,
     body_type: String,
-    game: {
-        name: String,
-        penny: {__proto__: currency},
-        pencil: {__proto__:currency},
-        book: {__proto__:currency},
-        knowledge: {__proto__:currency},
-    	eng101: {__proto__:job},
-	cs142: {__proto__:job},
-        jobPennyRate: Number,
-	jobsTabUnlocked: Boolean
+    
+	game: {
+		gameOutputConsoleEntryCount:  Number,
+		player:{
+			energy: Number
+			//name
+		},			
+		penny:{ 
+			count: Number,
+			rate: Number,
+			unlocked: Boolean
+			},
+		pencil:{
+			count: Number,
+			rate: Number,
+			unlocked: Boolean,
+			cost : Number				
+		},	
+		book:{
+			count: Number,
+			rate: Number,
+			unlocked: Boolean,
+			cost : Number				
+		},
+		knowledge:{
+			count: Number,
+			rate: Number,
+			unlocked: Boolean			
+		},	
+		classes:{
+			tabUnlocked: Boolean,
+			eng101:{
+				count: Number,
+				unlocked: Boolean,
+				cost: Number,
+				studyCost: Number,
+				finalCost: Number				
+			},
+			cs142:{
+				count: Number,
+				unlocked: Boolean,
+				cost: Number,
+				studyCost: Number,
+				finalCost: Number				
+			}
+		},
+		jobs: {
+			tabUnlocked: Boolean,
+			pennyRate: Number,
+			mcdonalds:{
+				hired: Boolean,
+				jobListUnlocked: Boolean,
+				progress: Number,
+				ShiftManagerUnlocked: Boolean,
+				ManagerUnlocked: Boolean,
+				workingAsBurgerFlipper: Boolean,
+				workingAsCashier: Boolean,
+				workingAsShiftManager: Boolean,
+				workingAsManager: Boolean
+			},
+			myspace:{
+				hired: Boolean,
+				unlocked: Boolean,
+				jobListUnlocked: Boolean,
+				progress: Number,
+				seniorDevUnlocked: Boolean,
+				ceoUnlocked: Boolean,
+				workingAsIntern: Boolean,
+				workingAsITSupport: Boolean,
+				workingAsSeniorDev: Boolean,
+				workingAsCEO: Boolean
+			}
+		},
+		calendar:{
+			daysCount: Number,
+			yearsCount: Number
+		}
 	}
 });
 mongoose.model('User', UserSchema);

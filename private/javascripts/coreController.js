@@ -30,8 +30,9 @@ function($scope,$http){
 	/* ******************************************
 	******** * Game Object	********************
 	*********************************************/
-
-
+	$scope.game = {};
+	
+	$scope.initGame = function() {
 		$scope.game={
 			gameOutputConsoleEntryCount:  0,
 			player:{
@@ -109,15 +110,23 @@ function($scope,$http){
 				yearsCount: 2016,
 			},
 		};
+	};
 
 
 
 	/* ******************************************
 	******** * Tick Counter	********************
-	*********************************************/	
+	*********************************************/
+	$scope.firstLoad = false;	
 
 	var tickTimerVar = setInterval(tickTimer, 100);		
-	function tickTimer() {	
+	function tickTimer() {
+		if (!$scope.firstLoad) {
+			$scope.initGame();
+			$scope.loadUserState();
+			$scope.firstLoad = true;
+		}
+	
 		$scope.game.penny.rate = $scope.game.jobs.pennyRate;  //if need to add new way to get penny add here
 		$scope.game.penny.count =  $scope.game.penny.count + $scope.game.penny.rate;	
 		$scope.game.knowledge.count = $scope.game.knowledge.count + $scope.game.knowledge.rate;
@@ -146,6 +155,20 @@ function($scope,$http){
 			}
 		};
 	}
+	
+	$scope.clearUserState = function() {
+		$http.post("/users/update", {withCredentials:true, game: {}})
+		.then(
+			function success(data) {
+				$scope.initGame();
+				console.log("User data cleared");		
+			},
+			function error(err) {
+				console.log("ERROR in clearing user state");
+				console.log(err);
+			}
+		);
+	}
 
 	// Save user state to DB
 	$scope.saveUserState = function() {	
@@ -161,6 +184,23 @@ function($scope,$http){
 				console.log(err);
 			}
 		);
+	}
+	
+	$scope.loadUserState = function() {
+		$http.get("/users/me", {withCredentials:true})
+		.then(
+			function success(data) {
+				if ((typeof data.data.game != 'undefined') && (typeof data.data.game[0] != undefined)) {
+					$scope.game = data.data.game;
+				}else {
+					console.log("User has no DB entry");
+				}
+			},
+			function error(err) {
+				console.log("ERROR in loading user state");
+				console.log(err);
+			}
+		)
 	}		
 
 	//TimeStamp
