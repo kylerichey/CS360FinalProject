@@ -29,6 +29,7 @@
 							</button>
 							<ul class="dropdown-menu">
 								<li><a href="#" ng-click="loadUserState()">Load</a></li>
+								<li><a id="confirmReset" href="www.google.com">Reset</a></li>
 								<li><a href="#" ng-click="giveFreePenny()">Debug</a></li>
 								<li role="separator" class="divider"></li>
 								<li><a href="/login">Logout</a></li>					 
@@ -108,9 +109,22 @@
 								<br>
 							</div> 							
 						</div> 
-							<div id="relationshipTab" class="tab-pane fade">
-								<h4>girlfriends</h4>
+						<div id="relationshipTab" class="tab-pane fade">
+							<div ng-repeat="entry in relationshipList"> 						
+								<div class="panel panel-primary" ng-show="entry.unlocked()">
+									<div class="panel-heading">
+										<button class="btn btn-primary" ng-click="entry.clickCondition()"> {{entry.buttonText()}}</button> 
+										
+										
+									</div>
+									<div class="panel-body">
+									<h4> fgf </h4>
+									</div>
+								
+							    </div>
+								<br>
 							</div>
+						</div>
 					</div>
 				</div>
 				<div id="console" class="col-md-4">
@@ -124,7 +138,10 @@
 		
 		</div>
 		 
-		
+	<script>	
+		$(document).ready(function(){
+		$('#confirmReset').click(function(){return confirm("Are you sure you want to reset your game data?");})
+}) </script>
 
 	</body>
 </html>

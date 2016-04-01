@@ -21,6 +21,7 @@ Core game play JavaScript
 		* Jobs
 */
 
+
 angular.module('studentGame', []) 
 .controller('coreController', [ 
 '$scope','$http', 
@@ -304,6 +305,13 @@ function($scope,$http){
 	$scope.getPlayerEnergy = function (){
 		return $scope.game.player.energy;
 	};
+	
+	
+		/* ******************************************
+	******** * Reset Function	*****************
+	*********************************************/
+
+
 	
 	
 	/* ******************************************
@@ -1417,6 +1425,75 @@ function($scope,$http){
 		},
 
 		];
+		
+		
+				
+		/* ******************************************
+	******** *Relationships ********************
+	*********************************************/	
+		$scope.girlfriendAttributes=[
+	{
+		name: "Katie",
+		hair:"Blonde",
+	},
+	{
+		name:"Mckayla",
+		hair:"Brown",
+	},
+	{
+		name:"Wes",
+		hair:"Brown",
+	},
+	];
+	
+	$scope.girlfriend1Unlocked = false;	
+	$scope.girlfriend1 =$scope.girlfriendAttributes[0]; 
+	$scope.girlfriend1Name = $scope.girlfriend1.name;
+	
+		
+
+		
+	/* ******************************************
+	******** *Girlfriend 1 ********************
+	*********************************************/	
+	
+	$scope.getGirlfriend1Name = function (){
+		if($scope.girlfriend1Unlocked == true){
+			return $scope.girlfriend1Name;
+		}else{			
+			return "Go on the prowl";
+		}
+	};
+	
+	$scope.girlfriend1ClickCondition = function () {
+		if($scope.girlfriend1Unlocked){
+			
+		}else {
+		 	$scope.girlfriend1 =$scope.girlfriendAttributes[(Math.floor((Math.random() * $scope.girlfriendAttributes.length)))]; 
+			//console.log($scope.girlfriendAttributes.length);
+			//alert("hi");
+			$scope.girlfriend1Name = $scope.girlfriend1.name;
+			$scope.girlfriend1Unlocked = true;
+		}
+	};
+	
+	$scope.getGirlfriend1Tooltip = function (){
+		return "Shes cute";
+	};
+		
+	$scope.relationshipList = [
+		{
+			buttonText:$scope.getGirlfriend1Name,
+			unlocked:true,
+			toolTip: $scope.getGirlfriend1Tooltip,
+			clickCondition: $scope.girlfriend1ClickCondition,
+				
+			
+		},
+	];
+
+	
+
 	
 	// End of main function
 	} 
