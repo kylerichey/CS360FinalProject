@@ -27,14 +27,99 @@ angular.module('studentGame', [])
 function($scope,$http){ 
 
 	/* ******************************************
+	******** * Game Object	********************
+	*********************************************/
+
+
+		$scope.game={
+			gameOutputConsoleEntryCount:  0,
+			player:{
+				energy: 50,
+				//name
+			},			
+			penny:{ 
+				count: 0,
+				rate: 0,
+				unlocked: true,
+				},
+			pencil:{
+				count: 0,
+				rate: 0,
+				unlocked: false,
+				cost : 10,				
+			},	
+			book:{
+				count: 0,
+				rate: 0,
+				unlocked: false,
+				cost : 20,				
+			},
+			knowledge:{
+				count: 0,
+				rate: 0,
+				unlocked: false,			
+			},	
+			classes:{
+				tabUnlocked: false,
+				eng101:{
+					count: 0,
+					unlocked: true,
+					cost: 3,
+					studyCost: 2,
+					finalCost: 10,				
+				},
+				cs142:{
+					count: 0,
+					unlocked: false,
+					cost: 10,
+					studyCost: 5,
+					finalCost: 15,				
+				},
+			},
+			jobs: {
+				tabUnlocked: false,
+				pennyRate: 0,
+				mcdonalds:{
+					hired: false,
+					jobListUnlocked: false,
+					progress: 0,
+					ShiftManagerUnlocked: false,
+					ManagerUnlocked: false,
+					workingAsBurgerFlipper: false,
+					workingAsCashier: false,
+					workingAsShiftManager: false,
+					workingAsManager:false,
+				},
+				myspace:{
+					hired: false,
+					unlocked: false,
+					jobListUnlocked: false,
+					progress: 0,
+					seniorDevUnlocked: false,
+					ceoUnlocked: false,
+					workingAsIntern: false,
+					workingAsITSupport: false,
+					workingAsSeniorDev: false,
+					workingAsCEO:false,
+				},
+			},
+			calendar:{
+				daysCount: 1,
+				yearsCount: 2016,
+			},
+		};
+
+
+
+	/* ******************************************
 	******** * Tick Counter	********************
 	*********************************************/	
 
 	var tickTimerVar = setInterval(tickTimer, 100);		
 	function tickTimer() {	
-		$scope.pennyRate = $scope.jobPennyRate;  //if need to add new way to get penny add here
-		$scope.pennyCount =  $scope.pennyCount + $scope.pennyRate;	
-		$scope.knowledgeCount = $scope.knowledgeCount + $scope.knowledgeRate;
+		$scope.game.penny.rate = $scope.game.jobs.pennyRate;  //if need to add new way to get penny add here
+		$scope.game.penny.count =  $scope.game.penny.count + $scope.game.penny.rate;	
+		$scope.game.knowledge.count = $scope.game.knowledge.count + $scope.game.knowledge.rate;
 		
 		$scope.updateJobProgressBars();		
 	};
@@ -53,63 +138,18 @@ function($scope,$http){
 		$scopeTimeCounter +=1;
 		if ($scopeTimeCounter >=10){
 			$scopeTimeCounter=0;
-			$scope.daysCount += 1;			
-			$scope.playerEnergy+=25;
-			if($scope.playerEnergy>100) {
-				$scope.playerEnergy= 100;	
+			$scope.game.calendar.daysCount += 1;			
+			$scope.game.player.energy+=25;
+			if($scope.game.player.energy>100) {
+				$scope.game.player.energy= 100;	
 			}
 		};
 	}
 
-	
-	/******Save/Load User State*********/
 	// Save user state to DB
-	$scope.saveUserState = function() {
+	$scope.saveUserState = function() {	
 		
-		var myGame = {
-			name: $scope.playerName,
-			penny: {
-				rate: $scope.pennyRate,
-				count: $scope.pennyCount,
-				unlocked: $scope.pennyUnlocked,
-				cost: 0
-			},
-			pencil: {
-				rate: $scope.pencilRate,
-				count: $scope.pencilCount,
-				unlocked: $scope.pencilUnlocked,
-				cost: $scope.pencilCost				
-			},
-			book: {
-				rate: $scope.bookRate,
-				count: $scope.bookCount,
-				unlocked: $scope.bookUnlocked,
-				cost: $scope.bookCost
-			},
-			knowledge: {
-				rate: $scope.knowledgeRate,
-				count: $scope.knowledgeCount,
-				unlocked: $scope.knowledgeUnlocked,
-				cost: 0
-			},
-			eng101: {
-				count: $scope.eng101Count,
-				unlocked: $scope.eng101Unlocked,
-				cost: $scope.eng101Cost,
-				studyCost: $scope.eng101StudyCost,
-				finalCost: $scope.eng101FinalCost
-			},
-			cs142: {
-				count: $scope.cs142Count,
-				unlocked: $scope.cs142Unlocked,
-				cost: $scope.cs142Cost,
-				studyCost: $scope.cs142StudyCost,
-				finalCost: $scope.cs142FinalCost
-			},
-			jobsTabUnlocked: $scope.jobsTabUnlocked,
-			jobPennyRate: $scope.jobPennyRate		
-		}
-		$http.post("/users/update", {withCredentials: true, game: myGame})
+		$http.post("/users/update", {withCredentials: true, game: $scope.game})
 		.then(
 			function success(data) {
 				console.log("SUCCESS");
@@ -120,57 +160,7 @@ function($scope,$http){
 				console.log(err);
 			}
 		);
-	}
-
-	// Load User state from DB
-	$scope.loadUserState = function() {
-		 
-		$http.get("/users/me", {withCredentials: true})
-		.then(
-			function success(data) {
-				console.log(data);
-				user = data.data;
-				$scope.playerName = user.username;
-				$scope.playerBodyLevel = user.body_type;
-				$scope.pennyRate = user.game.penny.rate;
-				$scope.pennyCount = user.game.penny.count;
-				$scope.pencilRate = user.game.pencil.rate;
-				$scope.pencilCount = user.game.pencil.count;
-				$scope.pencilUnlocked = user.game.pencil.unlocked;
-				$scope.pencilCost = user.game.pencil.cost;
-				$scope.bookCount = user.game.book.count;
-				$scope.bookRate = user.game.book.rate;
-				$scope.bookUnlocked = user.game.book.unlocked;
-				$scope.bookCost = user.game.book.cost;
-				$scope.knowledgeRate = user.game.knowledge.rate;
-				$scope.knowledgeCount = user.game.knowledge.count;
-				$scope.knowledgeUnlocked = user.game.knowledge.unlocked;
-				
-				$scope.eng101Count = user.game.eng101.count;
-				$scope.eng101Unlocked = user.game.eng101.unlocked;
-				$scope.eng101Cost = user.game.eng101.cost;
-				$scope.eng101StudyCost = user.game.eng101.studyCost;
-				$scope.eng101FinalCost = user.game.eng101.finalCost;
-				
-				$scope.cs142Count = user.game.cs142.count;
-				$scope.cs142Unlocked = user.game.cs142.unlocked;
-				$scope.cs142Cost = user.game.cs142.cost;
-				$scope.cs142StudyCost = user.game.cs142.studyCost;
-				$scope.cs142FinalCost = user.game.cs142.finalCost;
-				
-				$scope.jobsTabUnlocked = user.game.jobsTabUnlocked;
-				$scope.jobPennyRate = user.game.jobPennyRate;
-			}, 
-			function error(err) {
-				console.log("Error. Game could not be loaded");
-				console.log(err);
-				$scope.playerName = "ERROR!";
-				$scope.playerBodyLevel = "ERROR!";
-			}	
-		);
-	}
-
-	/******************************************/
+	}		
 
 	//TimeStamp
 	// Gets time for console timestamps output
@@ -181,11 +171,10 @@ function($scope,$http){
 
 	// Write to user console
 	//Easy function to call to add text to user console
-	$scope.gameOutputConsoleEntryCount = 0;
 	
 	$scope.addEntryToConsole = function(contentText){
-		$scope.gameOutputConsoleEntryCount = $scope.gameOutputConsoleEntryCount +1;
-		$scope.gameOutputConsoleList.push({content:contentText, number:$scope.gameOutputConsoleEntryCount,timestamp:$scope.getDatetime()}); 	
+		$scope.game.gameOutputConsoleEntryCount +=  +1;
+		$scope.gameOutputConsoleList.push({content:contentText, number:$scope.game.gameOutputConsoleEntryCount,timestamp:$scope.getDatetime()}); 	
 		};
 		//Default user console value
 		$scope.gameOutputConsoleList = [
@@ -228,23 +217,23 @@ function($scope,$http){
 
 		
 	$scope.giveFreePenny = function (){
-		$scope.pennyCount += 10000;
-		$scope.pencilCount += 10000;
-		$scope.bookCount += 10000;	
-		$scope.bookUnlocked = true;
-		$scope.pencilUnlocked= true;
-		$scope.cs142Unlocked = true;
-		$scope.classTabUnlocked = true;
-		$scope.jobsTabUnlocked= true;
-		$scope.myspaceUnlocked = true;
+		$scope.game.penny.count += 10000;
+		$scope.game.pencil.count += 10000;
+		$scope.game.book.count += 10000;	
+		$scope.game.book.unlocked = true;
+		$scope.game.pencil.unlocked= true;
+		$scope.game.classes.cs142.unlocked = true;
+		$scope.game.classes.tabUnlocked = true;
+		$scope.game.jobs.tabUnlocked= true;
+		$scope.game.jobs.myspace.unlocked = true;
 		
 	};
 	
 		/* ******************************************
 	******** * Calendar	*****************
 	*********************************************/
-	$scope.daysCount = 1;
-	$scope.yearsCount = 2016;
+	
+	$scope.game.calendar.yearsCount = 2016;
 	
 		$scope.getDateName = function (){
 		return "Date";
@@ -252,56 +241,56 @@ function($scope,$http){
 	
 	
 	$scope.getDate = function(){
-		if($scope.daysCount<=31){
-			return "January " + $scope.daysCount + " " + $scope.yearsCount;
+		if($scope.game.calendar.daysCount<=31){
+			return "January " + $scope.game.calendar.daysCount + " " + $scope.game.calendar.yearsCount;
 		}
-		else if ($scope.daysCount<=59)
+		else if ($scope.game.calendar.daysCount<=59)
 		{
-			return "February " + ($scope.daysCount - 31) + " " + $scope.yearsCount;
+			return "February " + ($scope.game.calendar.daysCount - 31) + " " + $scope.game.calendar.yearsCount;
 		}
-		else if ($scope.daysCount<=90)
+		else if ($scope.game.calendar.daysCount<=90)
 		{
-			return "March " + ($scope.daysCount - 59)+ " " +$scope.yearsCount;
+			return "March " + ($scope.game.calendar.daysCount - 59)+ " " +$scope.game.calendar.yearsCount;
 		}
-		else if ($scope.daysCount<=120)
+		else if ($scope.game.calendar.daysCount<=120)
 		{
-			return "April " + ($scope.daysCount - 90)+" " + $scope.yearsCount;
+			return "April " + ($scope.game.calendar.daysCount - 90)+" " + $scope.game.calendar.yearsCount;
 		}
-		else if ($scope.daysCount<=151)
+		else if ($scope.game.calendar.daysCount<=151)
 		{
-			return "May " + ($scope.daysCount - 120)+ " " +$scope.yearsCount;
+			return "May " + ($scope.game.calendar.daysCount - 120)+ " " +$scope.game.calendar.yearsCount;
 		}
-		else if ($scope.daysCount<=181)
+		else if ($scope.game.calendar.daysCount<=181)
 		{
-			return "June " + ($scope.daysCount - 151)+ " " +$scope.yearsCount;
+			return "June " + ($scope.game.calendar.daysCount - 151)+ " " +$scope.game.calendar.yearsCount;
 		}
-		else if ($scope.daysCount<=212)
+		else if ($scope.game.calendar.daysCount<=212)
 		{
-			return "July " + ($scope.daysCount - 181)+ " " +$scope.yearsCount;
+			return "July " + ($scope.game.calendar.daysCount - 181)+ " " +$scope.game.calendar.yearsCount;
 		}
-		else if ($scope.daysCount<=243)
+		else if ($scope.game.calendar.daysCount<=243)
 		{
-			return "August " + ($scope.daysCount - 212)+ " " +$scope.yearsCount;
+			return "August " + ($scope.game.calendar.daysCount - 212)+ " " +$scope.game.calendar.yearsCount;
 		}
-		else if ($scope.daysCount<=273)
+		else if ($scope.game.calendar.daysCount<=273)
 		{
-			return "September " + ($scope.daysCount - 243)+ " " +$scope.yearsCount;
+			return "September " + ($scope.game.calendar.daysCount - 243)+ " " +$scope.game.calendar.yearsCount;
 		}
-		else if ($scope.daysCount<=304)
+		else if ($scope.game.calendar.daysCount<=304)
 		{
-			return "October " + ($scope.daysCount - 273)+ " " +$scope.yearsCount;
+			return "October " + ($scope.game.calendar.daysCount - 273)+ " " +$scope.game.calendar.yearsCount;
 		}
-		else if ($scope.daysCount<=334)
+		else if ($scope.game.calendar.daysCount<=334)
 		{
-			return "November " + ($scope.daysCount - 304)+" " + $scope.yearsCount;
+			return "November " + ($scope.game.calendar.daysCount - 304)+" " + $scope.game.calendar.yearsCount;
 		}
-		else if ($scope.daysCount<=365)
+		else if ($scope.game.calendar.daysCount<=365)
 		{
-			return "December " + ($scope.daysCount - 304)+ " " +$scope.yearsCount;
+			return "December " + ($scope.game.calendar.daysCount - 304)+ " " +$scope.game.calendar.yearsCount;
 		}
 		else{
-			$scope.daysCount=1;
-			$scope.yearsCount += 1;
+			$scope.game.calendar.daysCount=1;
+			$scope.game.calendar.yearsCount += 1;
 			
 		}
 	}
@@ -310,10 +299,10 @@ function($scope,$http){
 	******** *Energy	*****************
 	*********************************************/	
 	
-	$scope.playerEnergy = 100;
+	
 	
 	$scope.getPlayerEnergy = function (){
-		return $scope.playerEnergy;
+		return $scope.game.player.energy;
 	};
 	
 	
@@ -325,23 +314,23 @@ function($scope,$http){
 	/* ******************************************
 	******** *Penny		************************
 	*********************************************/	
-	$scope.pennyCount = 0;
-	$scope.pennyRate = 0;
-	$scope.pennyUnlocked = true;
+	
+	
+	
 
 	$scope.increasePennyCount = function() {
-		$scope.pennyCount = $scope.pennyCount + 1;
-		if($scope.pennyCount>=10){
-			$scope.pencilUnlocked = true;				
+		$scope.game.penny.count +=1;
+		if($scope.game.penny.count>=10){
+			$scope.game.pencil.unlocked = true;				
 		}			
 	};
 	
 	$scope.getPennyRate = function(){
-		return  Math.round($scope.pennyRate *1000)/100;	
+		return  Math.round($scope.game.penny.rate *1000)/100;	
 	};
 	
 	$scope.getPennyCount = function(){		
-		return Math.round($scope.pennyCount *100)/100;	
+		return Math.round($scope.game.penny.count *100)/100;	
 	};
 	
 	$scope.pennyColorConditions = function (){
@@ -355,19 +344,15 @@ function($scope,$http){
 	
 	/* ******************************************
 	******** *Pencil   ************************
-	*********************************************/	
-	$scope.pencilCount = 0;	
-	$scope.pencilRate = 0;
-	$scope.pencilUnlocked = false;
-	$scope.pencilCost = 10;
+	*********************************************/		
 	
 	$scope.increasePencilCount = function() {				
-		if($scope.pennyCount>= $scope.pencilCost){					
-			$scope.pennyCount = $scope.pennyCount - $scope.pencilCost;
-			$scope.pencilCount = $scope.pencilCount + 1;
-			$scope.pencilCost = Math.round($scope.pencilCost + ($scope.globalCostGrowthRate * $scope.pencilCost));  //calculate new cost			
-			if(!$scope.bookUnlocked){
-				$scope.bookUnlocked =true;
+		if($scope.game.penny.count>= $scope.game.pencil.cost){					
+			$scope.game.penny.count = $scope.game.penny.count - $scope.game.pencil.cost;
+			$scope.game.pencil.count = $scope.game.pencil.count + 1;
+			$scope.game.pencil.cost = Math.round($scope.game.pencil.cost + ($scope.globalCostGrowthRate * $scope.game.pencil.cost));  //calculate new cost			
+			if(!$scope.game.book.unlocked){
+				$scope.game.book.unlocked =true;
 			}
 		}
 		else{		
@@ -376,15 +361,15 @@ function($scope,$http){
 	};
 	
 	$scope.getPencilCount = function () {
-		return Math.round($scope.pencilCount *100)/100;	
+		return Math.round($scope.game.pencil.count *100)/100;	
 	};
 	
 	$scope.getPencilRate = function (){
-		return Math.round($scope.pencilRate *1000)/100;	
+		return Math.round($scope.game.pencil.rate *1000)/100;	
 	};	
 	
 	$scope.getPencilCost = function (){		
-		return Math.round($scope.pencilCost);	
+		return Math.round($scope.game.pencil.cost);	
 	};
 	
 	$scope.pencilColorConditions = function() {
@@ -392,7 +377,7 @@ function($scope,$http){
 	};
 	
 	$scope.getPencilUnlocked = function (){
-		return $scope.pencilUnlocked;
+		return $scope.game.pencil.unlocked;
 	};
 		
 	
@@ -403,18 +388,14 @@ function($scope,$http){
 	/* ******************************************
 	******** *Book		************************
 	*********************************************/			
-	$scope.bookCount= 0;		
-	$scope.bookRate = 0;
-	$scope.bookUnlocked = false;
-	$scope.bookCost = 20;
-	
+
 	$scope.increaseBookCount = function() {	
-	if($scope.pennyCount>=$scope.bookCost){					
-		$scope.pennyCount = $scope.pennyCount - $scope.bookCost;
-		$scope.bookCount = $scope.bookCount + 1;
-		$scope.bookCost = Math.round($scope.bookCost + ($scope.globalCostGrowthRate * $scope.bookCost));
-		if(!$scope.classTabUnlocked){
-			$scope.classTabUnlocked = true;
+	if($scope.game.penny.count>=$scope.game.book.cost){					
+		$scope.game.penny.count = $scope.game.penny.count - $scope.game.book.cost;
+		$scope.game.book.count = $scope.game.book.count + 1;
+		$scope.game.book.cost = Math.round($scope.game.book.cost + ($scope.globalCostGrowthRate * $scope.game.book.cost));
+		if(!$scope.game.classes.tabUnlocked){
+			$scope.game.classes.tabUnlocked = true;
 			$scope.addEntryToConsole("Side Jobs and Class Tabs Unlocked");				 
 		 }	
 	}else{			
@@ -423,15 +404,15 @@ function($scope,$http){
 	};
 	
  	$scope.getBookCount = function (){
-		return Math.round($scope.bookCount *100)/100;	
+		return Math.round($scope.game.book.count *100)/100;	
 	};
 	
 	$scope.getBookRate = function (){
-		return Math.round($scope.bookRate *1000)/100;	
+		return Math.round($scope.game.book.rate *1000)/100;	
 	};
 	
 	$scope.getBookCost = function () {
-		return Math.round($scope.bookCost);
+		return Math.round($scope.game.book.cost);
 	}	
 
 	$scope.bookColorConditions = function() {
@@ -439,7 +420,7 @@ function($scope,$http){
 	};
 	
 	$scope.getBookUnlocked = function () {
-		return $scope.bookUnlocked;
+		return $scope.game.book.unlocked;
 	};
 
 
@@ -448,47 +429,41 @@ function($scope,$http){
 	/* ******************************************
 	******** *Knowledge		************************
 	*********************************************/	
-	
-	$scope.knowledgeCount = 0;
-	$scope.knowledgeRate = 0;
-	$scope.knowledgeUnlocked = false;
+
 	
 	$scope.getKnowledgeCount = function(){
-		return  Math.round($scope.knowledgeCount *100)/100;	
+		return  Math.round($scope.game.knowledge.count *100)/100;	
 	};
 	
 	$scope.getKnowledgeRate = function(){		
-		return  Math.round($scope.knowledgeRate *1000)/100;	
+		return  Math.round($scope.game.knowledge.rate *1000)/100;	
 	};
 	
 	 $scope.getKnowledgeUnlocked = function(){
-		return  $scope.knowledgeUnlocked; 
+		return  $scope.game.knowledge.unlocked; 
 	 };
 
 	
 	/* ******************************************
 	******** *Classes ************************
 	*********************************************/	
-	$scope.classTabUnlocked = false;
+	$scope.getClassTabUnlocked = function (){
+		return $scope.game.classes.tabUnlocked;
+	};
 	
 	/* ******************************************
 	******** *English 101************************
 	*********************************************/	
-	$scope.eng101Count = 0;	
-	$scope.eng101Unlocked = true;
-	$scope.eng101Cost = 3;
-	$scope.eng101StudyCost = 2;
-	$scope.eng101FinalCost = 10;
 	
 	$scope.classEng101 = function() { 	
-		if($scope.bookCount>=$scope.eng101Cost){
-			$scope.bookCount = $scope.bookCount - $scope.eng101Cost;
-			$scope.knowledgeRate = $scope.knowledgeRate + 0.006;
-			$scope.eng101Count = $scope.eng101Count + 1;
-			$scope.knowledgeUnlocked = true;
-			$scope.eng101Cost = Math.round($scope.eng101Cost + ($scope.globalCostGrowthRate * $scope.eng101Cost));
-				if($scope.jobsTabUnlocked == false){
-					$scope.jobsTabUnlocked = true;
+		if($scope.game.book.count>=$scope.game.classes.eng101.cost){
+			$scope.game.book.count = $scope.game.book.count - $scope.game.classes.eng101.cost;
+			$scope.game.knowledge.rate = $scope.game.knowledge.rate + 0.006;
+			$scope.game.classes.eng101.count +=  1;
+			$scope.game.knowledge.unlocked = true;
+			$scope.game.classes.eng101.cost = Math.round($scope.game.classes.eng101.cost + ($scope.globalCostGrowthRate * $scope.game.classes.eng101.cost));
+				if($scope.game.jobs.tabUnlocked == false){
+					$scope.game.jobs.tabUnlocked = true;
 					$scope.addEntryToConsole("Employment Tab Unlocked");	
 				}			
 		}else {
@@ -497,11 +472,11 @@ function($scope,$http){
 	};
 	
 	$scope.classEng101Study = function(){		
-		if($scope.eng101Count>0){
-			if($scope.pencilCount>=$scope.eng101StudyCost){			 
-				$scope.pencilCount = $scope.pencilCount -$scope.eng101StudyCost;
-				$scope.knowledgeCount = $scope.knowledgeCount +1;
-				$scope.eng101StudyCost = Math.round($scope.eng101StudyCost + ($scope.globalCostGrowthRate * $scope.eng101StudyCost));
+		if($scope.game.classes.eng101.count>0){
+			if($scope.game.pencil.count>=$scope.game.classes.eng101.studyCost){			 
+				$scope.game.pencil.count = $scope.game.pencil.count -$scope.game.classes.eng101.studyCost;
+				$scope.game.knowledge.count = $scope.game.knowledge.count +1;
+				$scope.game.classes.eng101.studyCost = Math.round($scope.game.classes.eng101.studyCost + ($scope.globalCostGrowthRate * $scope.game.classes.eng101.studyCost));
 			} else{
 				$scope.addEntryToConsole("Not enough pencil to study");
 			}
@@ -511,12 +486,12 @@ function($scope,$http){
 	};	
 
 	$scope.classEng101Final = function(){
-		if($scope.eng101Count>0){
-			if($scope.pencilCount>=$scope.eng101FinalCost){			 
-				$scope.pencilCount = $scope.pencilCount -$scope.eng101FinalCost;
-				$scope.knowledgeCount = $scope.knowledgeCount +10;
-				$scope.cs142Unlocked = true;
-				$scope.eng101FinalCost = Math.round($scope.eng101FinalCost + ($scope.globalCostGrowthRate * $scope.eng101FinalCost));
+		if($scope.game.classes.eng101.count>0){
+			if($scope.game.pencil.count>=$scope.game.classes.eng101.finalCost){			 
+				$scope.game.pencil.count = $scope.game.pencil.count -$scope.game.classes.eng101.finalCost;
+				$scope.game.knowledge.count = $scope.game.knowledge.count +10;
+				$scope.game.classes.cs142.unlocked = true;
+				$scope.game.classes.eng101.finalCost = Math.round($scope.game.classes.eng101.finalCost + ($scope.globalCostGrowthRate * $scope.game.classes.eng101.finalCost));
 			} else{
 				$scope.addEntryToConsole("Not enough pencil to take final");
 			}
@@ -526,20 +501,20 @@ function($scope,$http){
 	};
 	
 	$scope.getEng101Count = function(){
-		return $scope.eng101Count;
+		return $scope.game.classes.eng101.count;
 	};
 	
 	
 	$scope.getEng101Cost = function (){
-		return Math.round($scope.eng101Cost );
+		return Math.round($scope.game.classes.eng101.cost );
 	}
 		
 	$scope.getEng101StudyCost = function (){
-		return Math.round($scope.eng101StudyCost );
+		return Math.round($scope.game.classes.eng101.studyCost );
 	}	
 	
 	$scope.getEng101FinalCost = function (){
-		return Math.round($scope.eng101FinalCost );
+		return Math.round($scope.game.classes.eng101.finalCost );
 	}
 
 	$scope.eng101ColorConditions = function(){
@@ -547,7 +522,7 @@ function($scope,$http){
 		};	
 	
 	$scope.eng101StudyColorConditions = function(){
-		if($scope.eng101Count>0 && $scope.pencilCount>= $scope.eng101StudyCost ){
+		if($scope.game.classes.eng101.count>0 && $scope.game.pencil.count>= $scope.game.classes.eng101.studyCost ){
 			return "btn-success";
 		}else{
 			return "btn-default";
@@ -555,7 +530,7 @@ function($scope,$http){
 	};
 	
 	$scope.eng101FinalColorConditions = function(){
-		if($scope.eng101Count>0 && $scope.pencilCount>= $scope.eng101FinalCost ){
+		if($scope.game.classes.eng101.count>0 && $scope.game.pencil.count>= $scope.game.classes.eng101.finalCost ){
 			return "btn-success";
 		}else{
 			return "btn-default";
@@ -566,33 +541,28 @@ function($scope,$http){
 	/* ******************************************
 	******** *CS 142************************
 	*********************************************/		
-	$scope.cs142Unlocked = false;
-	$scope.cs142Count = 0;
-	$scope.cs142Cost = 10;
-	$scope.cs142StudyCost = 5;
-	$scope.cs142FinalCost =15;
 	
 	$scope.cs142Tooltip = "The second most failed class in college. Cost: 10 Books";
 	$scope.cs142StudyTooltip ="Or trade it to your friend for magic cards. Cost: 5 pencil. Reward: 10 Knowledge";
 	$scope.cs142FinalTooltip = "Me.hasStudied? A+, F. I think that's right? Cost: 15 Pencil. Reward: 30 Knowledge";
 	
 	$scope.classCS142 = function() { 
-		if($scope.bookCount>= $scope.cs142Cost){
-			$scope.bookCount = $scope.bookCount - $scope.cs142Cost;
-			$scope.knowledgeRate = $scope.knowledgeRate + 0.012;
-			$scope.cs142Count = $scope.cs142Count + 1;	
-			$scope.cs142Cost = Math.round($scope.cs142Cost + ($scope.globalCostGrowthRate * $scope.cs142Cost));			
+		if($scope.game.book.count>= $scope.game.classes.cs142.cost){
+			$scope.game.book.count = $scope.game.book.count - $scope.game.classes.cs142.cost;
+			$scope.game.knowledge.rate = $scope.game.knowledge.rate + 0.012;
+			$scope.game.classes.cs142.count +=  1;	
+			$scope.game.classes.cs142.cost = Math.round($scope.game.classes.cs142.cost + ($scope.globalCostGrowthRate * $scope.game.classes.cs142.cost));			
 		}else {
 			$scope.addEntryToConsole("Not enough book to take CS 142");				
 			}
 	};
 	
 	$scope.classCS142Study = function(){
-		if($scope.cs142Count>0){
-			if($scope.pencilCount>= $scope.cs142StudyCost){			 
-				$scope.pencilCount = $scope.pencilCount -$scope.cs142StudyCost;
-				$scope.knowledgeCount = $scope.knowledgeCount +10;
-				$scope.cs142StudyCost = Math.round($scope.cs142StudyCost + ($scope.globalCostGrowthRate * $scope.cs142StudyCost));	
+		if($scope.game.classes.cs142.count>0){
+			if($scope.game.pencil.count>= $scope.game.classes.cs142.studyCost){			 
+				$scope.game.pencil.count = $scope.game.pencil.count -$scope.game.classes.cs142.studyCost;
+				$scope.game.knowledge.count = $scope.game.knowledge.count +10;
+				$scope.game.classes.cs142.studyCost = Math.round($scope.game.classes.cs142.studyCost + ($scope.globalCostGrowthRate * $scope.game.classes.cs142.studyCost));	
 			} else{
 				$scope.addEntryToConsole("Not enough pencil to do lab");
 			}
@@ -602,19 +572,19 @@ function($scope,$http){
 	};
 	
 	$scope.cs142CanStudy = function(){
-		if($scope.cs142Count>0 && $scope.pencilCount>= $scope.cs142StudyCost ){
+		if($scope.game.classes.cs142.count>0 && $scope.game.pencil.count>= $scope.game.classes.cs142.studyCost ){
 			return true;
 		}else{
 			return false;
 		}
 	};	
 	$scope.classCS142Final = function(){
-		if($scope.cs142Count>0){
-			if($scope.pencilCount>=$scope.cs142FinalCost){			 
-				$scope.pencilCount = $scope.pencilCount - $scope.cs142FinalCost;
-				$scope.knowledgeCount = $scope.knowledgeCount +30;
-				$scope.cs142FinalCost = Math.round($scope.cs142FinalCost + ($scope.globalCostGrowthRate * $scope.cs142FinalCost));	
-				$scope.myspaceUnlocked = true;
+		if($scope.game.classes.cs142.count>0){
+			if($scope.game.pencil.count>=$scope.game.classes.cs142.finalCost){			 
+				$scope.game.pencil.count = $scope.game.pencil.count - $scope.game.classes.cs142.finalCost;
+				$scope.game.knowledge.count = $scope.game.knowledge.count +30;
+				$scope.game.classes.cs142.finalCost = Math.round($scope.game.classes.cs142.finalCost + ($scope.globalCostGrowthRate * $scope.game.classes.cs142.finalCost));	
+				$scope.game.jobs.myspace.unlocked = true;
 			} else{
 				$scope.addEntryToConsole("Not enough pencil to take final");
 			}
@@ -624,7 +594,7 @@ function($scope,$http){
 	};
 	
 	$scope.cs142CanFinal = function(){
-		if($scope.cs142Count>0 && $scope.pencilCount>= $scope.cs142FinalCost){
+		if($scope.game.classes.cs142.count>0 && $scope.game.pencil.count>= $scope.game.classes.cs142.finalCost){
 			return true;
 		} else {
 		return false;
@@ -632,23 +602,23 @@ function($scope,$http){
 	};
 	
 	$scope.getCS142Count = function(){
-		return  Math.round($scope.cs142Count *100)/100;	
+		return  Math.round($scope.game.classes.cs142.count *100)/100;	
 	};
 	
 	$scope.getCS142Cost = function () {
-		return Math.round($scope.cs142Cost);
+		return Math.round($scope.game.classes.cs142.cost);
 	};
 	
 	$scope.getCS142StudyCost = function () {
-		return Math.round($scope.cs142StudyCost);
+		return Math.round($scope.game.classes.cs142.studyCost);
 	};
 	
 	$scope.getCS142FinalCost = function () {
-		return Math.round($scope.cs142FinalCost);
+		return Math.round($scope.game.classes.cs142.finalCost);
 	};
 	
 	$scope.getCS142Unlocked = function (){
-		return $scope.cs142Unlocked;
+		return $scope.game.classes.cs142.unlocked;
 	};
 	
 	$scope.cs142ColorConditions = function(){
@@ -656,7 +626,7 @@ function($scope,$http){
 	};	
 	
 	$scope.cs142StudyColorConditions = function(){
-		if($scope.cs142Count>0 && $scope.pencilCount>= $scope.cs142StudyCost ){
+		if($scope.game.classes.cs142.count>0 && $scope.game.pencil.count>= $scope.game.classes.cs142.studyCost ){
 			return "btn-success";
 		}else{
 			return "btn-default";
@@ -664,7 +634,7 @@ function($scope,$http){
 	};
 	
 	$scope.cs142FinalColorConditions = function(){
-		if($scope.cs142Count>0 && $scope.pencilCount>= $scope.cs142FinalCost ){
+		if($scope.game.classes.cs142.count>0 && $scope.game.pencil.count>= $scope.game.classes.cs142.finalCost ){
 			return "btn-success";
 		}else{
 			return "btn-default";
@@ -674,90 +644,80 @@ function($scope,$http){
 	/* ******************************************
 	******** *Jobs   ************************
 	*********************************************/	
-	$scope.jobsTabUnlocked = false;	
-	$scope.jobPennyRate = 0;	
 	
 	$scope.resetCurrentJob = function()
 	{	
 		//mcdonalds
-		$scope.workingAsMcdonaldsBurgerFlipper = false;
-		$scope.workingAsMcdonaldsCashier = false;
-		$scope.workingAsMcdonaldsShiftManager = false;
-		$scope.workingAsMcdonaldsManager = false;
+		$scope.game.jobs.mcdonalds.workingAsBurgerFlipper = false;
+		$scope.game.jobs.mcdonalds.workingAsCashier = false;
+		$scope.game.jobs.mcdonalds.workingAsShiftManager = false;
+		$scope.game.jobs.mcdonalds.workingAsManager = false;
 		//myspace
-		$scope.workingAsMyspaceIntern = false;	
-		$scope.workingAsMyspaceITSupport = false;
-		$scope.workingAsMyspaceSeniorDev = false;
-		$scope.workingAsMyspaceCEO = false;
+		$scope.game.jobs.myspace.workingAsIntern = false;	
+		$scope.game.jobs.myspace.workingAsITSupport = false;
+		$scope.game.jobs.myspace.workingAsSeniorDev = false;
+		$scope.game.jobs.myspace.workingAsCEO = false;
 			
-	};
-	
+	};	
 	
 	$scope.updateJobProgressBars = function (){
 		//mcdonalds
-		if($scope.workingAsMcdonaldsBurgerFlipper && $scope.mcdonaldsProgress <= 100){			
-			$scope.mcdonaldsProgress += 0.02;
+		if($scope.game.jobs.mcdonalds.workingAsBurgerFlipper && $scope.game.jobs.mcdonalds.progress <= 100){			
+			$scope.game.jobs.mcdonalds.progress += 0.02;
 			};
-		if($scope.workingAsMcdonaldsCashier && $scope.mcdonaldsProgress <= 100){			
-			$scope.mcdonaldsProgress += 0.04;
+		if($scope.game.jobs.mcdonalds.workingAsCashier && $scope.game.jobs.mcdonalds.progress <= 100){			
+			$scope.game.jobs.mcdonalds.progress += 0.04;
 			};
-		if($scope.workingAsMcdonaldsShiftManager && $scope.mcdonaldsProgress <= 100){			
-			$scope.mcdonaldsProgress += 0.08;
+		if($scope.game.jobs.mcdonalds.workingAsShiftManager && $scope.game.jobs.mcdonalds.progress <= 100){			
+			$scope.game.jobs.mcdonalds.progress += 0.08;
 			};		
-		if(!$scope.mcdonaldsShiftManagerUnlocked && $scope.mcdonaldsProgress >= 33 ){
-				$scope.mcdonaldsShiftManagerUnlocked = true;
+		if(!$scope.game.jobs.mcdonalds.ShiftManagerUnlocked && $scope.game.jobs.mcdonalds.progress >= 33 ){
+				$scope.game.jobs.mcdonalds.ShiftManagerUnlocked = true;
 			};	
-		if(!$scope.mcdonaldsManagerUnlocked && $scope.mcdonaldsProgress >= 67 ){
-				$scope.mcdonaldsManagerUnlocked = true;
+		if(!$scope.game.jobs.mcdonalds.ManagerUnlocked && $scope.game.jobs.mcdonalds.progress >= 67 ){
+				$scope.game.jobs.mcdonalds.ManagerUnlocked = true;
 			};				
-		if($scope.mcdonaldsProgress > 100){
-			$scope.mcdonaldsProgress = 100;
+		if($scope.game.jobs.mcdonalds.progress > 100){
+			$scope.game.jobs.mcdonalds.progress = 100;
 		};
 		
 		//myspace
 		
-		if($scope.workingAsMyspaceIntern && $scope.myspaceProgress <= 100){			
-			$scope.myspaceProgress += 0.02;
+		if($scope.game.jobs.myspace.workingAsIntern && $scope.game.jobs.myspace.progress <= 100){			
+			$scope.game.jobs.myspace.progress += 0.02;
 		};
-		if($scope.workingAsMyspaceITSupport && $scope.myspaceProgress <= 100){			
-			$scope.myspaceProgress += 0.04;
+		if($scope.game.jobs.myspace.workingAsITSupport && $scope.game.jobs.myspace.progress <= 100){			
+			$scope.game.jobs.myspace.progress += 0.04;
 		};
-		if($scope.workingAsMyspaceSeniorDev && $scope.myspaceProgress <= 100){			
-			$scope.myspaceProgress += 0.08;
+		if($scope.game.jobs.myspace.workingAsSeniorDev && $scope.game.jobs.myspace.progress <= 100){			
+			$scope.game.jobs.myspace.progress += 0.08;
 		};		
-		if(!$scope.myspaceSeniorDevUnlocked && $scope.myspaceProgress >= 33 ){
-				$scope.myspaceSeniorDevUnlocked = true;
+		if(!$scope.game.jobs.myspace.seniorDevUnlocked && $scope.game.jobs.myspace.progress >= 33 ){
+				$scope.game.jobs.myspace.seniorDevUnlocked = true;
 			};			
-		if(!$scope.myspaceCEOUnlocked && $scope.myspaceProgress >= 67 ){
-				$scope.myspaceCEOUnlocked = true;
+		if(!$scope.game.jobs.myspace.ceoUnlocked && $scope.game.jobs.myspace.progress >= 67 ){
+				$scope.game.jobs.myspace.ceoUnlocked = true;
 			};				
-		if($scope.myspaceProgress > 100){
-			$scope.myspaceProgress = 100;
+		if($scope.game.jobs.myspace.progress > 100){
+			$scope.game.jobs.myspace.progress = 100;
 		};
+	};
+	
+	
+	$scope.getJobsTabUnlocked = function (){
+		return $scope.game.jobs.tabUnlocked;
 	};
 
 	/* ******************************************
 	******** *McDonalds  ********************
 	*********************************************/	
-	
-	$scope.mcdonaldsHired = false;
-	$scope.mcdonaldsJobListUnlocked =false;
-	$scope.mcdonaldsProgress = 0;
-	
-	$scope.mcdonaldsShiftManagerUnlocked = false;
-	$scope.mcdonaldsManagerUnlocked = false;
-	
-	$scope.workingAsMcdonaldsBurgerFlipper = false;
-	$scope.workingAsMcdonaldsCashier = false;
-	$scope.workingAsMcdonaldsShiftManager = false;
-	$scope.workingAsMcdonaldsManager = false;
 
 	$scope.applyMcdonalds = function (){	
-		if (!$scope.mcdonaldsHired){
-			if($scope.knowledgeCount>=3){
-				$scope.mcdonaldsHired = true;
-					$scope.mcdonaldsJobListUnlocked =true;
-				$scope.knowledgeCount = $scope.knowledgeCount - 3;
+		if (!$scope.game.jobs.mcdonalds.hired){
+			if($scope.game.knowledge.count>=3){
+				$scope.game.jobs.mcdonalds.hired = true;
+					$scope.game.jobs.mcdonalds.jobListUnlocked =true;
+				$scope.game.knowledge.count = $scope.game.knowledge.count - 3;
 				
 			} else {
 					$scope.addEntryToConsole("Not enough knowledge to work there");			 
@@ -768,9 +728,9 @@ function($scope,$http){
 	};
 	
 		$scope.mcdonaldsColorConditions = function(){
-			if ($scope.mcdonaldsHired ) {
+			if ($scope.game.jobs.mcdonalds.hired ) {
 				return "btn-primary";
-			}else if($scope.knowledgeCount>=3){
+			}else if($scope.game.knowledge.count>=3){
 				return "btn-success";
 			}else{
 				return "btn-default";
@@ -779,7 +739,7 @@ function($scope,$http){
 	};
 	  
 	  $scope.getMcdonaldsHired = function () {
-		  if($scope.mcdonaldsHired)
+		  if($scope.game.jobs.mcdonalds.hired)
 		  {
 			 return "Hired"; 
 		  } else {
@@ -789,29 +749,29 @@ function($scope,$http){
 	  
 	  $scope.mcdonaldsBurgerFlipper= function(){		 
 		$scope.resetCurrentJob();
-		$scope.workingAsMcdonaldsBurgerFlipper = true;
+		$scope.game.jobs.mcdonalds.workingAsBurgerFlipper = true;
 		 
-		$scope.jobPennyRate = 0.006;		  
+		$scope.game.jobs.pennyRate = 0.006;		  
 	  };
 	  
 	  
 	  $scope.mcdonaldsCashier= function(){
-		  if($scope.mcdonaldsProgress>=33){
+		  if($scope.game.jobs.mcdonalds.progress>=33){
 				$scope.resetCurrentJob();
-				$scope.workingAsMcdonaldsCashier = true;
+				$scope.game.jobs.mcdonalds.workingAsCashier = true;
 				
-				$scope.jobPennyRate = 0.012;
+				$scope.game.jobs.pennyRate = 0.012;
 		  }	else {
 			  $scope.addEntryToConsole("You need more xp to do that job");	
 		  }	
 	  };	  
 	  	
 	  $scope.mcdonaldsShiftManager= function(){
-		  if($scope.mcdonaldsProgress>=67){
+		  if($scope.game.jobs.mcdonalds.progress>=67){
 				$scope.resetCurrentJob();
-				$scope.workingAsMcdonaldsShiftManager = true;
+				$scope.game.jobs.mcdonalds.workingAsShiftManager = true;
 				
-				$scope.jobPennyRate = 0.024;
+				$scope.game.jobs.pennyRate = 0.024;
 		  }	else {
 			  $scope.addEntryToConsole("You need more xp to do that job");	
 		  }	
@@ -820,11 +780,11 @@ function($scope,$http){
 
   
 		$scope.mcdonaldsManager= function(){
-		  if($scope.mcdonaldsProgress>=100){
+		  if($scope.game.jobs.mcdonalds.progress>=100){
 				$scope.resetCurrentJob();
-				$scope.workingAsMcdonaldsManager = true;
+				$scope.game.jobs.mcdonalds.workingAsManager = true;
 				
-				$scope.jobPennyRate = 0.050;
+				$scope.game.jobs.pennyRate = 0.050;
 		  }	else {
 			  $scope.addEntryToConsole("You need more xp to do that job");	
 		  }	
@@ -832,7 +792,7 @@ function($scope,$http){
 	  
 	$scope.mcdonaldsBurgerFlipperColorCondition= function(){
 	  
-	  if($scope.workingAsMcdonaldsBurgerFlipper)
+	  if($scope.game.jobs.mcdonalds.workingAsBurgerFlipper)
 	  {
 		  return "btn-success";
 	  } else {
@@ -842,10 +802,10 @@ function($scope,$http){
   };	
 		
   $scope.mcdonaldsCashierColorCondition= function(){	 
-	  if($scope.workingAsMcdonaldsCashier)
+	  if($scope.game.jobs.mcdonalds.workingAsCashier)
 	  {
 		  return "btn-success";
-	  } else if ($scope.mcdonaldsProgress>=33){
+	  } else if ($scope.game.jobs.mcdonalds.progress>=33){
 		    return "btn-primary"
 	  } else {
 		  return "btn-default";  
@@ -854,10 +814,10 @@ function($scope,$http){
   };
 	  
 	$scope.mcdonaldsShiftManagerColorCondition= function(){	 
-	  if($scope.workingAsMcdonaldsShiftManager)
+	  if($scope.game.jobs.mcdonalds.workingAsShiftManager)
 	  {
 		  return "btn-success";
-	  } else if ($scope.mcdonaldsProgress>=67){
+	  } else if ($scope.game.jobs.mcdonalds.progress>=67){
 		    return "btn-primary"
 	  } else {
 		  return "btn-default";  
@@ -866,10 +826,10 @@ function($scope,$http){
   };
   	  	
 	$scope.mcdonaldsManagerColorCondition= function(){	 
-	  if($scope.workingAsMcdonaldsManager)
+	  if($scope.game.jobs.mcdonalds.workingAsManager)
 	  {
 		  return "btn-success";
-	  } else if ($scope.mcdonaldsProgress>=100){
+	  } else if ($scope.game.jobs.mcdonalds.progress>=100){
 		    return "btn-primary"
 	  } else {
 		  return "btn-default";  
@@ -878,19 +838,19 @@ function($scope,$http){
 	};
   
 	  $scope.getMcdonaldsProgressRound = function (){
-		  return Math.round($scope.mcdonaldsProgress * 10)/10;
+		  return Math.round($scope.game.jobs.mcdonalds.progress * 10)/10;
 	  };
 	  
 	  $scope.getMcdonaldsJobListUnlocked = function (){
-		return $scope.mcdonaldsJobListUnlocked;
+		return $scope.game.jobs.mcdonalds.jobListUnlocked;
 	}
 	
 	$scope.getMcdonaldsShiftManagerUnlocked = function (){
-		return $scope.mcdonaldsShiftManagerUnlocked;
+		return $scope.game.jobs.mcdonalds.ShiftManagerUnlocked;
 	};
 	
 	$scope.getMcdonaldsManagerUnlocked = function (){
-		return $scope.mcdonaldsManagerUnlocked;
+		return $scope.game.jobs.mcdonalds.ManagerUnlocked;
 	};
 	
 	
@@ -898,26 +858,14 @@ function($scope,$http){
 		/* ******************************************
 	******** *MySpace  ********************
 	*********************************************/	
-	
-	$scope.myspaceUnlocked = false;	
-	$scope.myspaceHired = false;
-	$scope.myspaceJobListUnlocked =false;
-	$scope.myspaceProgress = 0;
-	
-	$scope.myspaceSeniorDevUnlocked = false;
-	$scope.myspaceCEOUnlocked =false;
-	
-	$scope.workingAsMyspaceIntern = false;	
-	$scope.workingAsMyspaceITSupport = false;
-	$scope.workingAsMyspaceSeniorDev = false;
-	$scope.workingAsMyspaceCEO = false;
+
 	
 	$scope.applyMyspace = function (){	
-		if (!$scope.myspaceHired){
-			if($scope.knowledgeCount>=30){
-				$scope.myspaceHired = true;
-				$scope.myspaceJobListUnlocked =true;
-				$scope.knowledgeCount -= 30;
+		if (!$scope.game.jobs.myspace.hired){
+			if($scope.game.knowledge.count>=30){
+				$scope.game.jobs.myspace.hired = true;
+				$scope.game.jobs.myspace.jobListUnlocked =true;
+				$scope.game.knowledge.count -= 30;
 				
 			} else {
 					$scope.addEntryToConsole("Not enough knowledge to work there");			 
@@ -928,9 +876,9 @@ function($scope,$http){
 	};
 	
 		$scope.myspaceColorConditions = function(){
-			if ($scope.myspaceHired ) {
+			if ($scope.game.jobs.myspace.hired ) {
 				return "btn-primary";
-			}else if($scope.knowledgeCount>=30){
+			}else if($scope.game.knowledge.count>=30){
 				return "btn-success";
 			}else{
 				return "btn-default";
@@ -939,7 +887,7 @@ function($scope,$http){
 	};
 	  
 	  $scope.getMyspaceHired = function () {
-		  if($scope.myspaceHired)
+		  if($scope.game.jobs.myspace.hired)
 		  {
 			 return "Hired"; 
 		  } else {
@@ -950,12 +898,12 @@ function($scope,$http){
 	  
 	$scope.myspaceIntern= function(){		 
 		$scope.resetCurrentJob();
-		$scope.workingAsMyspaceIntern = true;		 
-		$scope.jobPennyRate = 0.001;		  
+		$scope.game.jobs.myspace.workingAsIntern = true;		 
+		$scope.game.jobs.pennyRate = 0.001;		  
 	  };
 	  
 	$scope.myspaceInternColorCondition= function(){	  
-	  if($scope.workingAsMyspaceIntern)
+	  if($scope.game.jobs.myspace.workingAsIntern)
 	  {
 		  return "btn-success";
 	  } else {
@@ -966,10 +914,10 @@ function($scope,$http){
 	  
 	  
 	  $scope.myspaceITSupport= function(){
-		  if($scope.myspaceProgress>=33){
+		  if($scope.game.jobs.myspace.progress>=33){
 				$scope.resetCurrentJob();
-				$scope.workingAsMyspaceITSupport = true;				
-				$scope.jobPennyRate = 0.050;
+				$scope.game.jobs.myspace.workingAsITSupport = true;				
+				$scope.game.jobs.pennyRate = 0.050;
 		  }	else {
 			  $scope.addEntryToConsole("You need more xp to do that job");	
 		  }	
@@ -977,10 +925,10 @@ function($scope,$http){
 
 
 	$scope.myspaceITSupportColorCondition= function(){	 
-	  if($scope.workingAsMyspaceITSupport)
+	  if($scope.game.jobs.myspace.workingAsITSupport)
 	  {
 		  return "btn-success";
-	  } else if ($scope.myspaceProgress>=33){
+	  } else if ($scope.game.jobs.myspace.progress>=33){
 		    return "btn-primary"
 	  } else {
 		  return "btn-default";  
@@ -989,20 +937,20 @@ function($scope,$http){
   };	  
 	  	
 	  $scope.myspaceSeniorDev= function(){
-		  if($scope.myspaceProgress>=67){
+		  if($scope.game.jobs.myspace.progress>=67){
 				$scope.resetCurrentJob();
-				$scope.workingAsMyspaceSeniorDev = true;				
-				$scope.jobPennyRate = 0.075;
+				$scope.game.jobs.myspace.workingAsSeniorDev = true;				
+				$scope.game.jobs.pennyRate = 0.075;
 		  }	else {
 			  $scope.addEntryToConsole("You need more xp to do that job");	
 		  }	
 	  };	 
 
   $scope.myspaceSeniorDevColorCondition= function(){	 
-	  if($scope.workingAsMyspaceSeniorDev)
+	  if($scope.game.jobs.myspace.workingAsSeniorDev)
 	  {
 		  return "btn-success";
-	  } else if ($scope.myspaceProgress>=67){
+	  } else if ($scope.game.jobs.myspace.progress>=67){
 		    return "btn-primary"
 	  } else {
 		  return "btn-default";  
@@ -1013,20 +961,20 @@ function($scope,$http){
 
   
   $scope.myspaceCEO= function(){
-		  if($scope.myspaceProgress>=100){
+		  if($scope.game.jobs.myspace.progress>=100){
 				$scope.resetCurrentJob();
-				$scope.workingAsMyspaceCEO= true;				
-				$scope.jobPennyRate = 0.100;
+				$scope.game.jobs.myspace.workingAsCEO= true;				
+				$scope.game.jobs.pennyRate = 0.100;
 		  }	else {
 			  $scope.addEntryToConsole("You need more xp to do that job");	
 		  }	
 	  };  
 	
   $scope.myspaceCEOColorCondition= function(){	 
-	  if($scope.workingAsMyspaceCEO)
+	  if($scope.game.jobs.myspace.workingAsCEO)
 	  {
 		  return "btn-success";
-	  } else if ($scope.myspaceProgress>=100){
+	  } else if ($scope.game.jobs.myspace.progress>=100){
 		    return "btn-primary"
 	  } else {
 		  return "btn-default";  
@@ -1037,26 +985,26 @@ function($scope,$http){
 
   
 	  $scope.getMyspaceProgressRound = function (){
-		  return Math.round($scope.myspaceProgress * 10)/10;
+		  return Math.round($scope.game.jobs.myspace.progress * 10)/10;
 	  };
 	  
 	
 	
 	$scope.getMyspaceUnlocked = function (){
-		return $scope.myspaceUnlocked;
+		return $scope.game.jobs.myspace.unlocked;
 	};
 		
 	$scope.getMyspaceJobListUnlocked = function (){
-		return $scope.myspaceJobListUnlocked;
+		return $scope.game.jobs.myspace.jobListUnlocked;
 	};
 	
 	
 	$scope.getMyspaceSeniorDevUnlocked  = function(){
-		return $scope.myspaceSeniorDevUnlocked;
+		return $scope.game.jobs.myspace.seniorDevUnlocked;
 	};	
 	
 	$scope.getMyspaceCEOUnlocked = function (){
-		return $scope.myspaceCEOUnlocked;
+		return $scope.game.jobs.myspace.ceoUnlocked;
 	};
 	
 	
@@ -1071,20 +1019,20 @@ function($scope,$http){
 	
 	
 	$scope.sideJobSummerSales = function (){		
-		if($scope.playerEnergy>=35){
-			$scope.playerEnergy -= 35;
-			$scope.pennyCount+= (50+ ($scope.pencilCount * 5));
+		if($scope.game.player.energy>=35){
+			$scope.game.player.energy -= 35;
+			$scope.game.penny.count+= (50+ ($scope.game.pencil.count * 5));
 		}else{
 			 $scope.addEntryToConsole("You don't have enough energy to do that job");	
 		}		
 	};
 	
 	$scope.getSideJobSummerSalesTooltip = function (){
-		return "The more pencils you have the better salesman you are. Reward: " + (50+ ($scope.pencilCount * 5)) + " penny";
+		return "The more pencils you have the better salesman you are. Reward: " + (50+ ($scope.game.pencil.count * 5)) + " penny";
 	};
 	
 	$scope.sideJobSummerSalesColorCondition = function (){
-		  if($scope.playerEnergy>=35)
+		  if($scope.game.player.energy>=35)
 	  {
 		  return "btn-primary";	  
 	  } else {
@@ -1092,6 +1040,9 @@ function($scope,$http){
 	  }	
 	};
 		
+		$scope.getSideJobSummerSalesCost = function (){
+			return "35";
+		};
 	
 		
 	/* ******************************************
@@ -1100,20 +1051,20 @@ function($scope,$http){
 	
 	
 	$scope.sideJobTutor = function (){
-		if($scope.playerEnergy>=25){
-			$scope.playerEnergy -= 25;
-			$scope.pennyCount+= (25+ ($scope.bookCount *5));
+		if($scope.game.player.energy>=25){
+			$scope.game.player.energy -= 25;
+			$scope.game.penny.count+= (25+ ($scope.game.book.count *5));
 		}else{
 			 $scope.addEntryToConsole("You don't have enough energy to do that job");	
 		}		
 	};	
 	
 	$scope.getSideJobTutorTooltip = function (){
-		return "The more books you have the better tutor you are. Reward: " + (25+ ($scope.bookCount *5)) + " penny";
+		return "The more books you have the better tutor you are. Reward: " + (25+ ($scope.game.book.count *5)) + " penny";
 	};
 	
 	$scope.sideJobTutorColorCondition = function (){		
-	  if($scope.playerEnergy>=25)
+	  if($scope.game.player.energy>=25)
 	  {
 		  return "btn-primary";	  
 	  } else {
@@ -1121,7 +1072,9 @@ function($scope,$http){
 	  }	
 	};
 		
-
+		$scope.getSideJobTutorCost = function (){
+			return "25";
+		};
 
 		
 
@@ -1181,17 +1134,21 @@ function($scope,$http){
 	
 	$scope.sideJobsList = [
 		{
-			buttonText:"Summer Sales",
+			buttonText:"Summer Sales ",
 			toolTip:$scope.getSideJobSummerSalesTooltip,
 			clickCondition:$scope.sideJobSummerSales,
 			colorCondition: $scope.sideJobSummerSalesColorCondition,
+			getCostFunction: $scope.getSideJobSummerSalesCost, 
+			getCostCurrency: " energy",
 			
 		},
 		{
-			buttonText:"Tutor a classmate",
+			buttonText:"Tutor a classmate ",
 			toolTip:$scope.getSideJobTutorTooltip,
 			clickCondition:$scope.sideJobTutor,
 			colorCondition: $scope.sideJobTutorColorCondition,
+			getCostFunction: $scope.getSideJobTutorCost, 
+			getCostCurrency: " energy",
 			
 		},
 		

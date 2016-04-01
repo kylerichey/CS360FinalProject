@@ -40,9 +40,10 @@
 			<br>				
 			<ul class="nav nav-tabs">
 				<li class="active"><a data-toggle="tab" href="#selfTab">Self</a></li>
-				<li ng-show="classTabUnlocked"><a data-toggle="tab" href="#sideJobTab">Side Jobs</a></li>  
-				<li ng-show="classTabUnlocked"><a data-toggle="tab" href="#classTab">Classes</a></li>  
-				<li ng-show="jobsTabUnlocked"><a data-toggle="tab" href="#jobTab">Employment</a></li>      
+				<li ng-show="getClassTabUnlocked()"><a data-toggle="tab" href="#sideJobTab">Side Jobs</a></li>  
+				<li ng-show="getClassTabUnlocked()"><a data-toggle="tab" href="#classTab">Classes</a></li>  
+				<li ng-show="getJobsTabUnlocked()"><a data-toggle="tab" href="#jobTab">Employment</a></li>
+				<li ng-show="getJobsTabUnlocked()"><a data-toggle="tab" href="#relationshipTab">Relationships</a></li>  
 			</ul>	
 			<br>			
 			<div class="row">
@@ -68,7 +69,7 @@
 						</div>
 						<div id="sideJobTab" class="tab-pane fade">						
 							<div ng-repeat="entry in sideJobsList"> 	
-								<button class="btn tooltip-button" ng-class="entry.colorCondition()" ng-click="entry.clickCondition()">{{entry.buttonText}}  <span class="tooltip"> {{entry.toolTip()}}</span></button>
+								<button class="btn tooltip-button" ng-class="entry.colorCondition()" ng-click="entry.clickCondition()">{{entry.buttonText}} <span class="badge" >{{entry.getCostFunction()}}{{entry.getCostCurrency}}</span> <span class="tooltip"> {{entry.toolTip()}}</span></button>
 							</div>
 						</div>
 						<div id="classTab" class="tab-pane fade">
@@ -94,7 +95,7 @@
 										
 										  <div class="progress" ng-show="entry.jobListUnlocked()">
 											<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{entry.progress()}}" aria-valuemin="0" aria-valuemax="100" style="width:{{entry.progress()}}%">
-											{{entry.progress()}}%
+											XP: {{entry.progress()}}%
 											</div>
 										</div>	
 									</div>
@@ -106,7 +107,10 @@
 							    </div>
 								<br>
 							</div> 							
-						</div>  
+						</div> 
+							<div id="relationshipTab" class="tab-pane fade">
+								<h4>girlfriends</h4>
+							</div>
 					</div>
 				</div>
 				<div id="console" class="col-md-4">
