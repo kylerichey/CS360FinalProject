@@ -32,6 +32,84 @@ function($scope,$http){
 	*********************************************/
 	$scope.game = {};
 	
+	$scope.game={
+			gameOutputConsoleEntryCount:  0,
+			player:{
+				energy: 50,
+				//name
+			},			
+			penny:{ 
+				count: 0,
+				rate: 0,
+				unlocked: true,
+				},
+			pencil:{
+				count: 0,
+				rate: 0,
+				unlocked: false,
+				cost : 10,				
+			},	
+			book:{
+				count: 0,
+				rate: 0,
+				unlocked: false,
+				cost : 20,				
+			},
+			knowledge:{
+				count: 0,
+				rate: 0,
+				unlocked: false,			
+			},	
+			classes:{
+				tabUnlocked: false,
+				eng101:{
+					count: 0,
+					unlocked: true,
+					cost: 3,
+					studyCost: 2,
+					finalCost: 10,				
+				},
+				cs142:{
+					count: 0,
+					unlocked: false,
+					cost: 10,
+					studyCost: 5,
+					finalCost: 15,				
+				},
+			},
+			jobs: {
+				tabUnlocked: false,
+				pennyRate: 0,
+				mcdonalds:{
+					hired: false,
+					jobListUnlocked: false,
+					progress: 0,
+					ShiftManagerUnlocked: false,
+					ManagerUnlocked: false,
+					workingAsBurgerFlipper: false,
+					workingAsCashier: false,
+					workingAsShiftManager: false,
+					workingAsManager:false,
+				},
+				myspace:{
+					hired: false,
+					unlocked: false,
+					jobListUnlocked: false,
+					progress: 0,
+					seniorDevUnlocked: false,
+					ceoUnlocked: false,
+					workingAsIntern: false,
+					workingAsITSupport: false,
+					workingAsSeniorDev: false,
+					workingAsCEO:false,
+				},
+			},
+			calendar:{
+				daysCount: 1,
+				yearsCount: 2016,
+			},
+		};
+	
 	$scope.initGame = function() {
 		$scope.game={
 			gameOutputConsoleEntryCount:  0,
@@ -117,16 +195,58 @@ function($scope,$http){
 	/* ******************************************
 	******** * Tick Counter	********************
 	*********************************************/
-	$scope.firstLoad = false;	
+	$scope.updateJobProgressBars = function (){
+		//mcdonalds
+		if($scope.game.jobs.mcdonalds.workingAsBurgerFlipper && $scope.game.jobs.mcdonalds.progress <= 100){			
+			$scope.game.jobs.mcdonalds.progress += 0.02;
+			};
+		if($scope.game.jobs.mcdonalds.workingAsCashier && $scope.game.jobs.mcdonalds.progress <= 100){			
+			$scope.game.jobs.mcdonalds.progress += 0.04;
+			};
+		if($scope.game.jobs.mcdonalds.workingAsShiftManager && $scope.game.jobs.mcdonalds.progress <= 100){			
+			$scope.game.jobs.mcdonalds.progress += 0.08;
+			};		
+		if(!$scope.game.jobs.mcdonalds.ShiftManagerUnlocked && $scope.game.jobs.mcdonalds.progress >= 33 ){
+				$scope.game.jobs.mcdonalds.ShiftManagerUnlocked = true;
+			};	
+		if(!$scope.game.jobs.mcdonalds.ManagerUnlocked && $scope.game.jobs.mcdonalds.progress >= 67 ){
+				$scope.game.jobs.mcdonalds.ManagerUnlocked = true;
+			};				
+		if($scope.game.jobs.mcdonalds.progress > 100){
+			$scope.game.jobs.mcdonalds.progress = 100;
+		};
+		
+		//myspace
+		
+		if($scope.game.jobs.myspace.workingAsIntern && $scope.game.jobs.myspace.progress <= 100){			
+			$scope.game.jobs.myspace.progress += 0.02;
+		};
+		if($scope.game.jobs.myspace.workingAsITSupport && $scope.game.jobs.myspace.progress <= 100){			
+			$scope.game.jobs.myspace.progress += 0.04;
+		};
+		if($scope.game.jobs.myspace.workingAsSeniorDev && $scope.game.jobs.myspace.progress <= 100){			
+			$scope.game.jobs.myspace.progress += 0.08;
+		};		
+		if(!$scope.game.jobs.myspace.seniorDevUnlocked && $scope.game.jobs.myspace.progress >= 33 ){
+				$scope.game.jobs.myspace.seniorDevUnlocked = true;
+			};			
+		if(!$scope.game.jobs.myspace.ceoUnlocked && $scope.game.jobs.myspace.progress >= 67 ){
+				$scope.game.jobs.myspace.ceoUnlocked = true;
+			};				
+		if($scope.game.jobs.myspace.progress > 100){
+			$scope.game.jobs.myspace.progress = 100;
+		};
+	};
+	
+	$scope.firstInit = false;	
 
 	var tickTimerVar = setInterval(tickTimer, 100);		
 	function tickTimer() {
-		if (!$scope.firstLoad) {
-			$scope.initGame();
+		if (!$scope.firstInit) {
 			$scope.loadUserState();
-			$scope.firstLoad = true;
+			$scope.firstInit = true;
 		}
-	
+		
 		$scope.game.penny.rate = $scope.game.jobs.pennyRate;  //if need to add new way to get penny add here
 		$scope.game.penny.count =  $scope.game.penny.count + $scope.game.penny.rate;	
 		$scope.game.knowledge.count = $scope.game.knowledge.count + $scope.game.knowledge.rate;
@@ -142,6 +262,7 @@ function($scope,$http){
 	// Auto Screen Refresh
 	var updateScreenTimerVar = setInterval(updateScreenTimer, 1000);
 	function updateScreenTimer() {
+		
 	  $scope.$apply(function () {
 		   // Updates the screen every second without any user clicking		  
 			});
@@ -707,49 +828,6 @@ function($scope,$http){
 		$scope.game.jobs.myspace.workingAsCEO = false;
 			
 	};	
-	
-	$scope.updateJobProgressBars = function (){
-		//mcdonalds
-		if($scope.game.jobs.mcdonalds.workingAsBurgerFlipper && $scope.game.jobs.mcdonalds.progress <= 100){			
-			$scope.game.jobs.mcdonalds.progress += 0.02;
-			};
-		if($scope.game.jobs.mcdonalds.workingAsCashier && $scope.game.jobs.mcdonalds.progress <= 100){			
-			$scope.game.jobs.mcdonalds.progress += 0.04;
-			};
-		if($scope.game.jobs.mcdonalds.workingAsShiftManager && $scope.game.jobs.mcdonalds.progress <= 100){			
-			$scope.game.jobs.mcdonalds.progress += 0.08;
-			};		
-		if(!$scope.game.jobs.mcdonalds.ShiftManagerUnlocked && $scope.game.jobs.mcdonalds.progress >= 33 ){
-				$scope.game.jobs.mcdonalds.ShiftManagerUnlocked = true;
-			};	
-		if(!$scope.game.jobs.mcdonalds.ManagerUnlocked && $scope.game.jobs.mcdonalds.progress >= 67 ){
-				$scope.game.jobs.mcdonalds.ManagerUnlocked = true;
-			};				
-		if($scope.game.jobs.mcdonalds.progress > 100){
-			$scope.game.jobs.mcdonalds.progress = 100;
-		};
-		
-		//myspace
-		
-		if($scope.game.jobs.myspace.workingAsIntern && $scope.game.jobs.myspace.progress <= 100){			
-			$scope.game.jobs.myspace.progress += 0.02;
-		};
-		if($scope.game.jobs.myspace.workingAsITSupport && $scope.game.jobs.myspace.progress <= 100){			
-			$scope.game.jobs.myspace.progress += 0.04;
-		};
-		if($scope.game.jobs.myspace.workingAsSeniorDev && $scope.game.jobs.myspace.progress <= 100){			
-			$scope.game.jobs.myspace.progress += 0.08;
-		};		
-		if(!$scope.game.jobs.myspace.seniorDevUnlocked && $scope.game.jobs.myspace.progress >= 33 ){
-				$scope.game.jobs.myspace.seniorDevUnlocked = true;
-			};			
-		if(!$scope.game.jobs.myspace.ceoUnlocked && $scope.game.jobs.myspace.progress >= 67 ){
-				$scope.game.jobs.myspace.ceoUnlocked = true;
-			};				
-		if($scope.game.jobs.myspace.progress > 100){
-			$scope.game.jobs.myspace.progress = 100;
-		};
-	};
 	
 	
 	$scope.getJobsTabUnlocked = function (){
