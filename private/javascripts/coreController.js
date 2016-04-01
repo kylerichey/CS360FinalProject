@@ -221,6 +221,25 @@ function($scope,$http){
 	$scope.globalCostGrowthRate = 0.05;
 	
 	
+	
+		/* ******************************************
+	******** * Free Resources	*****************
+	*********************************************/
+
+		
+	$scope.giveFreePenny = function (){
+		$scope.pennyCount += 10000;
+		$scope.pencilCount += 10000;
+		$scope.bookCount += 10000;	
+		$scope.bookUnlocked = true;
+		$scope.pencilUnlocked= true;
+		$scope.cs142Unlocked = true;
+		$scope.classTabUnlocked = true;
+		$scope.jobsTabUnlocked= true;
+		$scope.myspaceUnlocked = true;
+		
+	};
+	
 		/* ******************************************
 	******** * Calendar	*****************
 	*********************************************/
@@ -306,7 +325,7 @@ function($scope,$http){
 	/* ******************************************
 	******** *Penny		************************
 	*********************************************/	
-	$scope.pennyCount = 10000;
+	$scope.pennyCount = 0;
 	$scope.pennyRate = 0;
 	$scope.pennyUnlocked = true;
 
@@ -337,7 +356,7 @@ function($scope,$http){
 	/* ******************************************
 	******** *Pencil   ************************
 	*********************************************/	
-	$scope.pencilCount = 100;	
+	$scope.pencilCount = 0;	
 	$scope.pencilRate = 0;
 	$scope.pencilUnlocked = false;
 	$scope.pencilCost = 10;
@@ -384,7 +403,7 @@ function($scope,$http){
 	/* ******************************************
 	******** *Book		************************
 	*********************************************/			
-	$scope.bookCount= 100;		
+	$scope.bookCount= 0;		
 	$scope.bookRate = 0;
 	$scope.bookUnlocked = false;
 	$scope.bookCost = 20;
@@ -1039,6 +1058,71 @@ function($scope,$http){
 	$scope.getMyspaceCEOUnlocked = function (){
 		return $scope.myspaceCEOUnlocked;
 	};
+	
+	
+/* ******************************************
+	******** *Side Jobs********************
+	*********************************************/
+	
+	
+	/* ******************************************
+	******** Summer Sales *********************
+	*********************************************/
+	
+	
+	$scope.sideJobSummerSales = function (){		
+		if($scope.playerEnergy>=35){
+			$scope.playerEnergy -= 35;
+			$scope.pennyCount+= (50+ ($scope.pencilCount * 5));
+		}else{
+			 $scope.addEntryToConsole("You don't have enough energy to do that job");	
+		}		
+	};
+	
+	$scope.getSideJobSummerSalesTooltip = function (){
+		return "The more pencils you have the better salesman you are. Reward: " + (50+ ($scope.pencilCount * 5)) + " penny";
+	};
+	
+	$scope.sideJobSummerSalesColorCondition = function (){
+		  if($scope.playerEnergy>=35)
+	  {
+		  return "btn-primary";	  
+	  } else {
+		  return "btn-default";  
+	  }	
+	};
+		
+	
+		
+	/* ******************************************
+	******** Tutor *********************
+	*********************************************/
+	
+	
+	$scope.sideJobTutor = function (){
+		if($scope.playerEnergy>=25){
+			$scope.playerEnergy -= 25;
+			$scope.pennyCount+= (25+ ($scope.bookCount *5));
+		}else{
+			 $scope.addEntryToConsole("You don't have enough energy to do that job");	
+		}		
+	};	
+	
+	$scope.getSideJobTutorTooltip = function (){
+		return "The more books you have the better tutor you are. Reward: " + (25+ ($scope.bookCount *5)) + " penny";
+	};
+	
+	$scope.sideJobTutorColorCondition = function (){		
+	  if($scope.playerEnergy>=25)
+	  {
+		  return "btn-primary";	  
+	  } else {
+		  return "btn-default";  
+	  }	
+	};
+		
+
+
 		
 
 	/* ******************************************
@@ -1046,7 +1130,7 @@ function($scope,$http){
 	*********************************************/	
 
 
-		/* ******************************************
+	/* ******************************************
 	******** *Self Currency List ********************
 	*********************************************/
 
@@ -1089,30 +1173,28 @@ function($scope,$http){
 	
 	
 			/* ******************************************
-	******** *Side Jobs ********************
+	******** *Side Jobs List********************
 	*********************************************/
 	
-	$scope.sideJobTutor = function (){
-		
-	};
-	
-	$scope.sideJobSummerSales = function (){
-		
-	};
+
+
 	
 	$scope.sideJobsList = [
 		{
-			buttonText:"Tutor a classmate",
-			toolTip:"temp",
-			clickCondition:$scope.sideJobTutor,
+			buttonText:"Summer Sales",
+			toolTip:$scope.getSideJobSummerSalesTooltip,
+			clickCondition:$scope.sideJobSummerSales,
+			colorCondition: $scope.sideJobSummerSalesColorCondition,
 			
 		},
 		{
-			buttonText:"Summer Sales",
-			toolTip:"temp2",
-			clickCondition:$scope.sideJobSummerSales,
+			buttonText:"Tutor a classmate",
+			toolTip:$scope.getSideJobTutorTooltip,
+			clickCondition:$scope.sideJobTutor,
+			colorCondition: $scope.sideJobTutorColorCondition,
 			
 		},
+		
 	];
 	
 	
