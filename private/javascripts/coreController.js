@@ -257,25 +257,39 @@ function($scope,$http){
 	******** * Misc Functions ******************	
 	*********************************************/	
 	
-	$scopeTimeCounter = 0;
-	
-	// Auto Screen Refresh
-	var updateScreenTimerVar = setInterval(updateScreenTimer, 1000);
-	function updateScreenTimer() {
-		
+	// Auto Screen Refresh, 1 second
+	var updateScreenAutoRefresh = setInterval(updateScreenAuto, 1000);
+	function updateScreenAuto() {		
 	  $scope.$apply(function () {
 		   // Updates the screen every second without any user clicking		  
 			});
-		$scopeTimeCounter +=1;
-		if ($scopeTimeCounter >=10){
-			$scopeTimeCounter=0;
-			$scope.game.calendar.daysCount += 1;			
-			$scope.game.player.energy+=25;
-			if($scope.game.player.energy>100) {
-				$scope.game.player.energy= 100;	
-			}
 		};
-	}
+	
+	// Day Counter
+	var updateScreenDayTimer = setInterval(updateScreenDay, 10000);
+	function updateScreenDay() {		
+		$scope.game.calendar.daysCount += 1;			
+		$scope.game.player.energy+=25;
+		if($scope.game.player.energy>100) {
+			$scope.game.player.energy= 100;	
+			}		
+	};
+	
+		// AutoSave On
+	var updateScreenSaveTimerOn = setInterval(updateScreenSaveOn, 60000);
+	function updateScreenSaveOn() {		
+			$scopeCurrentlySavingGame = true;
+			//save game
+			$scope.saveUserState();
+			$scope.addEntryToConsole("AutoSaving");
+	};
+	
+			// AutoSave Off 
+	var updateScreenSaveTimerOff = setInterval(updateScreenSaveOff, 61500);
+	function updateScreenSaveOff() {		
+			$scopeCurrentlySavingGame = false;
+			
+	};
 	
 	$scope.clearUserState = function() {
 		$http.post("/users/update", {withCredentials:true, game: {}})
@@ -383,6 +397,8 @@ function($scope,$http){
 		$scope.game.pencil.count += 10000;
 		$scope.game.book.count += 10000;	
 		$scope.game.book.unlocked = true;
+		$scope.game.knowledge.unlocked = true;
+		$scope.game.knowledge.count += 10000;
 		$scope.game.pencil.unlocked= true;
 		$scope.game.classes.cs142.unlocked = true;
 		$scope.game.classes.tabUnlocked = true;
@@ -469,10 +485,27 @@ function($scope,$http){
 	
 	
 		/* ******************************************
-	******** * Reset Function	*****************
+	******** * Save Function	*****************
 	*********************************************/
-
-
+	$scopeCurrentlySavingGame = false;
+	
+	
+	$scope.getSaveButtonText = function (){
+		if($scopeCurrentlySavingGame){
+			return "Autosaving";
+		}else{
+			return "Save Game";
+		}
+		
+	};
+	
+	$scope.saveButtoncolorCondition = function (){
+		if($scopeCurrentlySavingGame){
+			return "btn-success";
+		}else{
+			return "btn-primary";
+		}		
+	};
 	
 	
 	/* ******************************************
@@ -548,11 +581,7 @@ function($scope,$http){
 	$scope.getPencilUnlocked = function (){
 		return $scope.game.pencil.unlocked;
 	};
-		
-	
-	
 
-	
 	
 	/* ******************************************
 	******** *Book		************************

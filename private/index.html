@@ -18,19 +18,20 @@
 		<div class="container" >                                 
 			<div class="row">
 				<div class="col-md-9">
-					<h2>The Student Game</h2>		
+					<h2>The Student Game</h2>	
+									
 				</div>	
 				<div class="col-md-3">
 					<div class="btn-group" role="group" aria-label="...">
-						<button type="button" class="btn btn-primary" ng-click="saveUserState()">Save Game</button>
+						<button type="button" class="btn"  ng-class="saveButtoncolorCondition()" ng-click="saveUserState()">{{getSaveButtonText()}}</button>
 						<div class="btn-group" role="group">
 							<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">					  
 								<span class="caret"></span>
 							</button>
 							<ul class="dropdown-menu">
-								<li><a href="#" ng-click="loadUserState()">Load</a></li>
-								<li><a id="confirmReset" href="#" ng-click="clearUserState()">Reset</a></li>
+								<li><a href="#" data-toggle="modal" data-target="#confirmReset">Reset</a></li>
 								<li><a href="#" ng-click="giveFreePenny()">Debug</a></li>
+								<li><a href="#" data-toggle="modal" data-target="#changeLogModal">Change Log</a></li>
 								<li role="separator" class="divider"></li>
 								<li><a href="/login">Logout</a></li>					 
 							</ul>
@@ -96,7 +97,7 @@
 										
 										  <div class="progress" ng-show="entry.jobListUnlocked()">
 											<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{entry.progress()}}" aria-valuemin="0" aria-valuemax="100" style="width:{{entry.progress()}}%">
-											XP: {{entry.progress()}}%
+											{{entry.progress()}}%
 											</div>
 										</div>	
 									</div>
@@ -110,6 +111,7 @@
 							</div> 							
 						</div> 
 						<div id="relationshipTab" class="tab-pane fade">
+							<h4>Under development</h4>
 							<div ng-repeat="entry in relationshipList"> 						
 								<div class="panel panel-primary" ng-show="entry.unlocked()">
 									<div class="panel-heading">
@@ -118,7 +120,7 @@
 										
 									</div>
 									<div class="panel-body">
-									<h4> fgf </h4>
+									<button class="btn btn-primary"> Ask on a date</button> 
 									</div>
 								
 							    </div>
@@ -135,13 +137,66 @@
 					</div>
 				</div>
 		    </div>
-		
+			
+			
+			  
+		  <div class="modal fade" id="confirmReset" role="dialog">
+			<div class="modal-dialog">
+			
+			  <!-- Modal content-->
+			  <div class="modal-content">
+				<div class="modal-header">
+				  <button type="button" class="close" data-dismiss="modal">&times;</button>
+				  <h4 class="modal-title">Reset Game</h4>
+				</div>
+				<div class="modal-body">
+				  <p>This will reset everything back to zero. Cannot be undone</p>
+				</div>
+				<div class="modal-footer">
+				 <button type="button" class="btn btn-primary" ng-click="clearUserState()" data-dismiss="modal">Ok</button>
+				  <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+				</div>
+			  </div>
+			  
+			</div>
+		  </div>
+		  
+		  <div class="modal fade" id="changeLogModal" role="dialog">
+			<div class="modal-dialog">
+			
+			  <!-- Modal content-->
+			  <div class="modal-content">
+				<div class="modal-header">
+				  <button type="button" class="close" data-dismiss="modal">&times;</button>
+				  <h4 class="modal-title">Change Log</h4>
+				</div>
+				<div class="modal-body">
+					<ul >
+						<li><p>Version 1.0 - April 1st 2016</p></li>	
+						<ul >
+							<li><p>Core Game Functionality</p></li>	
+							<li><p>Base Currencies</p></li>	
+							<li><p>Classes</p></li>	
+							<li><p>Jobs and Employment</p></li>	
+							<li><p>User Accounts, Authenicated Login</p></li>	
+							<li><p>Cloud based game save state and load</p></li>	
+						</ul>	
+					<li><p>In Development</p></li>	
+						<ul >
+							<li><p>Relationships Tab</p></li>
+							<li><p>Gym Tab</p></li>
+							<li><p>New Jobs/Classes/Currencies</p></li>
+						</ul>	
+					</ul>					
+				</div>
+				<div class="modal-footer">
+				 <button type="button" class="btn btn-primary" data-dismiss="modal">Return to game</button>
+				</div>
+			  </div>
+			  
+			</div>
+		  </div>
+				
 		</div>
-		 
-	<script>	
-		$(document).ready(function(){
-		$('#confirmReset').click(function(){return confirm("Are you sure you want to reset your game data?");})
-}) </script>
-
 	</body>
 </html>
