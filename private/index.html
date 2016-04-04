@@ -115,12 +115,12 @@
 							<div ng-repeat="entry in relationshipList"> 						
 								<div class="panel panel-primary" ng-show="entry.unlocked()">
 									<div class="panel-heading">
-										<button class="btn btn-primary" ng-click="entry.clickCondition()"> {{entry.buttonText()}}</button> 
+										<button class="btn tooltip-button" ng-class="entry.colorCondition()" ng-click="entry.clickCondition()"> {{entry.buttonText()}} <span class="tooltip"> {{entry.toolTip()}}</span> <span class="badge" >{{entry.energyCost()}}</span> </button> 
 										
 										
 									</div>
-									<div class="panel-body">
-									<button class="btn btn-primary"> Ask on a date</button> 
+									<div class="panel-body" ng-show="entry.tabsUnlocked()">
+										<button class="btn btn-primary"> Ask on a date</button> 
 									</div>
 								
 							    </div>

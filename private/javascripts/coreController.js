@@ -105,8 +105,8 @@ function($scope,$http){
 				},
 			},
 			calendar:{
-				daysCount: 1,
-				yearsCount: 2016,
+				daysCount: $scope.daysSinceYear,
+				yearsCount: (new Date().getFullYear()),
 			},
 		};
 	
@@ -184,8 +184,8 @@ function($scope,$http){
 				},
 			},
 			calendar:{
-				daysCount: 1,
-				yearsCount: 2016,
+				daysCount: $scope.daysSinceYear,
+				yearsCount: (new Date().getFullYear()),
 			},
 		};
 	};
@@ -336,6 +336,7 @@ function($scope,$http){
 	}
 	
 	$scope.loadUserState = function() {
+		$scope.todaysDateInDays();
 		$http.get("/users/me", {withCredentials:true})
 		.then(
 			function success(data) {
@@ -395,7 +396,8 @@ function($scope,$http){
 			}
 			
 			$scope.daysSinceYear += (new Date().getDate());
-			return $scope.daysSinceYear;
+			//console.log($scope.daysSinceYear);
+			//return $scope.daysSinceYear;
 			
 		};
 
@@ -1642,19 +1644,37 @@ function($scope,$http){
 		/* ******************************************
 	******** *Relationships ********************
 	*********************************************/	
+	$scope.playerGenderMale = true;
+	
 		$scope.girlfriendAttributes=[
-	{
-		name: "Katie",
-		hair:"Blonde",
-	},
-	{
-		name:"Mckayla",
-		hair:"Brown",
-	},
-	{
-		name:"Wes",
-		hair:"Brown",
-	},
+		{
+			name: "Katie",
+			hair:"Blonde",
+		},
+		{
+			name:"Mckayla",
+			hair:"Brown",
+		},
+		{
+			name:"Jessica",
+			hair:"Brown",
+		},
+	];
+	
+		
+		$scope.boyfriendAttributes=[		
+		{
+			name:"Wes",
+			hair:"Brown",
+		},
+		{
+			name:"Cole",
+			hair:"Brown",
+		},
+		{
+			name:"Kaleb",
+			hair:"Brown",
+		},
 	];
 	
 	$scope.girlfriend1Unlocked = false;	
@@ -1678,28 +1698,101 @@ function($scope,$http){
 	
 	$scope.girlfriend1ClickCondition = function () {
 		if($scope.girlfriend1Unlocked){
-			
-		}else {
-		 	$scope.girlfriend1 =$scope.girlfriendAttributes[(Math.floor((Math.random() * $scope.girlfriendAttributes.length)))]; 
-			//console.log($scope.girlfriendAttributes.length);
-			//alert("hi");
-			$scope.girlfriend1Name = $scope.girlfriend1.name;
-			$scope.girlfriend1Unlocked = true;
+			// add something
+		}else if($scope.game.player.energy >=100) {
+			$scope.game.player.energy -=100;
+			if($scope.playerGenderMale){   //get a girlfriend
+				$scope.girlfriend1 =$scope.girlfriendAttributes[(Math.floor((Math.random() * $scope.girlfriendAttributes.length)))]; 
+				$scope.girlfriend1Name = $scope.girlfriend1.name;
+				$scope.girlfriend1Unlocked = true;
+			}
+			else {   //get a boyfriend
+				$scope.girlfriend1 =$scope.boyfriendAttributes[(Math.floor((Math.random() * $scope.boyfriendAttributes.length)))]; 
+				$scope.girlfriend1Name = $scope.girlfriend1.name;
+				$scope.girlfriend1Unlocked = true;
+			}
+		} else{
+			 $scope.addEntryToConsole("You don't have enough energy to find a date");	
 		}
 	};
 	
 	$scope.getGirlfriend1Tooltip = function (){
-		return "Shes cute";
+		if($scope.girlfriend1Unlocked){
+			return "Shes cute";
+		} else{
+			return "Rejection is hard, so don't be too sad";
+		}
+		
 	};
+	
+	$scope.girlfriend1ColorCondition = function (){
+		if($scope.girlfriend1Unlocked){
+		   return "btn-primary";	  
+		} 
+		else if($scope.game.player.energy>=100)
+	  {
+		  return "btn-success";	  
+	  } else {
+		  return "btn-default";  
+	  }
+	};
+	
+	$scope.girlfriend1EnergyCost = function (){
+			if(!$scope.girlfriend1Unlocked){
+			return "Energy: 100";
+		} else{
+			return null;
+		}
+	}
+	
+	$scope.getGirlfriend1Unlocked=function (){
+		return $scope.girlfriend1Unlocked;
+	}
+	
+	
+		/* ******************************************
+	******** *Girlfriend 2  ********************
+	*********************************************/	
+	
+	
+	 $scope.girlfriend2Unlocked =false;
+	 
+		$scope.getGirlfriend2Name = function (){
+		if($scope.girlfriend1Unlocked == true){
+			return $scope.girlfriend1Name;
+		}else{			
+			return "Go on the prowl";
+		}
+	};
+	
+	
+		$scope.getGirlfriend2Unlocked=function (){
+		return $scope.girlfriend2Unlocked;
+	}
+	
 		
 	$scope.relationshipList = [
+		//girlfriend1
 		{
 			buttonText:$scope.getGirlfriend1Name,
 			unlocked:true,
 			toolTip: $scope.getGirlfriend1Tooltip,
 			clickCondition: $scope.girlfriend1ClickCondition,
+			colorCondition:$scope.girlfriend1ColorCondition,
+			energyCost: $scope.girlfriend1EnergyCost,
+			tabsUnlocked: $scope.getGirlfriend1Unlocked,
 				
 			
+		},
+		//girlfriend2
+		{
+			buttonText:$scope.getGirlfriend2Name,
+			unlocked:$scope.getGirlfriend1Unlocked,
+			toolTip: null,
+			clickCondition: null,
+			colorCondition:null,
+			energyCost: null,
+			tabsUnlocked:  $scope.getGirlfriend2Unlocked,
 		},
 	];
 
