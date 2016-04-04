@@ -263,6 +263,9 @@ function($scope,$http){
 	  $scope.$apply(function () {
 		   // Updates the screen every second without any user clicking		  
 			});
+			if($scopeCurrentlySavingGameClick){
+				$scopeCurrentlySavingGameClick=false;
+			}
 		};
 	
 	// Day Counter
@@ -292,6 +295,7 @@ function($scope,$http){
 	};
 	
 	$scope.clearUserState = function() {
+		
 		$http.post("/users/update", {withCredentials:true, game: {}})
 		.then(
 			function success(data) {
@@ -303,22 +307,32 @@ function($scope,$http){
 				console.log(err);
 			}
 		);
+		
 	}
+	
+	$scope.saveUserStateOnClick = function (){
+		$scope.addEntryToConsole("Game Saved");
+		$scope.saveUserState();
+	};
 
 	// Save user state to DB
 	$scope.saveUserState = function() {	
-		
+		$scopeCurrentlySavingGameClick = true;
 		$http.post("/users/update", {withCredentials: true, game: $scope.game})
 		.then(
 			function success(data) {
 				console.log("SUCCESS");
 				console.log(data);
+				
 			},
 			function error(err) {
 				console.log("ERROR");
 				console.log(err);
+				$scope.addEntryToConsole("Game NOT Saved");
 			}
 		);
+		//$scopeCurrentlySavingGame = false;
+		
 	}
 	
 	$scope.loadUserState = function() {
@@ -336,12 +350,60 @@ function($scope,$http){
 				console.log(err);
 			}
 		)
-	}		
+	}
+
+
+		$scope.todaysDateInDays = function (){
+			$scope.daysSinceYear = 0;
+			switch (new Date().getMonth()) {
+				case 0:
+					$scope.daysSinceYear =0;
+					break;
+				case 1:
+					$scope.daysSinceYear =31;
+					break;
+				case 2:
+					$scope.daysSinceYear = 59;
+					break;
+				case 3:
+					$scope.daysSinceYear = 90;
+					break;
+				case 4:
+					$scope.daysSinceYear = 120;
+					break;
+				case 5:
+					$scope.daysSinceYear = 151;
+					break;
+				case 6:
+					$scope.daysSinceYear = 181;
+					break;
+				case 7:
+					$scope.daysSinceYear = 212;
+					break;
+				case 8:
+					$scope.daysSinceYear = 243;
+					break;
+				case 9:
+					$scope.daysSinceYear=273;
+					break;
+				case 10:
+					$scope.daysSinceYear = 304;
+					break;
+				case 11:
+					$scope.daysSinceYear = 334;
+					break;
+			}
+			
+			$scope.daysSinceYear += (new Date().getDate());
+			return $scope.daysSinceYear;
+			
+		};
 
 	//TimeStamp
 	// Gets time for console timestamps output
 	$scope.getDatetime = function() {
 		var today = new Date();	
+		console.log($scope.todaysDateInDays());
 		return today.getHours() +":"+ ((today.getMinutes() < 10)?"0":"") +today.getMinutes() + ":"+ ((today.getSeconds() < 10)?"0":"") + today.getSeconds();	
 		};
 
@@ -488,11 +550,13 @@ function($scope,$http){
 	******** * Save Function	*****************
 	*********************************************/
 	$scopeCurrentlySavingGame = false;
-	
+	$scopeCurrentlySavingGameClick = false;
 	
 	$scope.getSaveButtonText = function (){
 		if($scopeCurrentlySavingGame){
 			return "Autosaving";
+		}else if($scopeCurrentlySavingGameClick){
+			return "Saving";
 		}else{
 			return "Save Game";
 		}
@@ -500,7 +564,7 @@ function($scope,$http){
 	};
 	
 	$scope.saveButtoncolorCondition = function (){
-		if($scopeCurrentlySavingGame){
+		if($scopeCurrentlySavingGame || $scopeCurrentlySavingGameClick){
 			return "btn-success";
 		}else{
 			return "btn-primary";
