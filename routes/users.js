@@ -42,55 +42,101 @@ router.get('/me', function(req, res, next) {
 });
 
 router.post('/login', function (req, res, next) {
+    var feedback =  {
+        message: undefined,
+        user_error: false,
+        password_error: false
+    };
     User.findOne({username: req.body.username}).exec(function(err, user) {
-        if (!user){
-            err = 'User Not Found.';
+        if (!user) {
+            feedback.message = "Username not found";
+            feedback.user_error = true;
+            req.session.regenerate(function() {
+                req.session.feedback = feedback;
+                res.redirect('/login');
+            });
         } else if (user.hashed_password === hashPW(req.body.password.toString())) {
             req.session.regenerate(function(){
                 console.log("login");
                 console.log(user);
                 req.session.user = user._id;
                 req.session.username = user.username;
-                req.session.msg = 'Authenticated as ' + user.username;
                 req.session.game = user.game;
                 res.redirect('/');
             });
-        }else{
-            err = 'Authentication failed.';
-        }
-        if(err){
+        } else {
+            feedback.message = "Incorrect password";
+            feedback.password_error = true;
             req.session.regenerate(function() {
-                res.session.msg = err;
-                res.redirect('/login.html');
+                req.session.feedback = feedback;
+                res.redirect('/login');
             });
         }
     });
 });
 
 router.post('/register', function (req, res, next) {
+    if (req.body.username === '') {
+        req.session.regenerate(function() {
+            req.session.feedback = {
+                message: "Must provide a non-empty username",
+                user_error: true
+            };
+            res.redirect('/register');
+        });
+        return;
+    }
+    User.findOne({username: req.body.username}).exec(function(err, user) {
+        if (!user) {
+            if (req.body.password1 !== req.body.password2) {
+                req.session.regenerate(function() {
+                    req.session.feedback = {
+                        message: "Passwords do not match",
+                        password_error: true
+                    };
+                    res.redirect('/register');
+                });
+            } else if (req.body.password1 === '') {
+                req.session.regenerate(function() {
+                    req.session.feedback = {
+                        message: "Must provide a non-empty password",
+                        password_error: true
+                    };
+                    res.redirect('/register');
+                });
+            } else {
+                var user = new User({
+                    username: req.body.username,
+                    hashed_password: hashPW(req.body.password1),
+                    gender: req.body.gender
+                });
 
-    var user = new User({
-        username: req.body.username,
-        hashed_password: hashPW(req.body.password1),
-        body_type: req.body.body_type === '' ? "Lack luster" : req.body.body_type
-    });
+                user.save(function(err) {
+                    if (err) {
+                        res.session.feedback = { 
+                            message: "Failed to register",
+                            error: err
+                        };
+                        res.redirect('/register');
+                    } else {
+                        req.session.user = user._id;
+                        req.session.username = user.username;
+                        req.session.game = user.game;
+                        res.redirect('/');
+                    }
+                });
+            }
 
-    user.save(function(err) {
-        if (err) {
-            res.session.err = err;
-            res.session.msg = "Failed to register";
-            res.redirect('/users/register');
         } else {
-            req.session.user = user._id;
-            req.session.username = user.username;
-            req.session.game = user.game;
-            res.redirect('/');
+            req.session.regenerate(function () {
+                req.session.feedback = {
+                    message: "Username unavailable",
+                    user_error: true
+                };
+                res.redirect('/register');
+            });
         }
     });
-})
-
-router.post('/logout', function(req, res, next) {
-    
 });
 
 router.post('/update', function(req, res, next) {

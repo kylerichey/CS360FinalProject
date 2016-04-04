@@ -1,4 +1,4 @@
-var express = require('express');
+  var express = require('express');
 var bodyParser = require('body-parser');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -18,8 +18,9 @@ var users = require('./routes/users');
 var app = express();
 
 // view engine setup
+app.engine(".html", require('ejs').__express);
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'html');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -40,7 +41,7 @@ app.all('/private/*', function(req, res, next) {
   if (req.session.user) {
     next();
   } else {
-    res.redirect("/login.html");
+    res.redirect("/login");
   }
 });
 app.use('/private', express.static(path.join(__dirname, 'private')));

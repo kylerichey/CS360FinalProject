@@ -14,10 +14,21 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/login', function(req, res, next){
+    var feedback = {};
     if (req.session) {
+        feedback = req.session.feedback;
         req.session.destroy();
     }
-    res.redirect('/login.html');
+    res.render('login', feedback);
+});
+
+router.get('/register', function(req, res, next) {
+    var feedback = {};
+    if (req.session) {
+        feedback = req.session.feedback;
+        req.session.destroy();
+    }
+    res.render('register', feedback);
 });
 
 router.post('/update', function(req, res, next, myGame) {

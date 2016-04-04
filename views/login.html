@@ -4,7 +4,7 @@
         <title>Welcome to the Student Game</title>          
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">    
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> 
-        <link rel="stylesheet" href="/public/stylesheets/style.css">
+        <link rel="stylesheet" href="/stylesheets/style.css">
     </head>
     <body>
     <div class="row">
@@ -15,17 +15,22 @@
     <div class="row">
         <div class="col-md-4 col-md-offset-4">
             <form action="/users/login" method="post">
-                <div class="form-group">
-                    <label for="username">Username</label>
+                <% if (locals.message) { %>
+                    <div class="bs-callout bs-callout-danger">
+                        <h4><%= locals.message %><h4>
+                    </div>
+                <% } %>
+                <div class="form-group<%= locals.user_error ? ' has-error' : '' %>">
+                    <label class="control-label" for="username">Username</label>
                     <input type="text" class="form-control" name="username" placeholder="Username">
                 </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
+                <div class="form-group<%= locals.password_error ? ' has-error' : '' %>">
+                    <label class="control-label" for="password">Password</label>
                     <input type="password" class="form-control" name="password" placeholder="Password">
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary">Login</button>
-                    <a href="/register.html" class="btn btn-default">Register</a>
+                    <a href="/register" class="btn btn-default">Register</a>
                 </div>
             </form>
         </div>
