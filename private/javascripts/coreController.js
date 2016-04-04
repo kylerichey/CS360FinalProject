@@ -353,9 +353,9 @@ function($scope,$http){
 		)
 	}
 
-
+		$scope.daysSinceYear = 0;
 		$scope.todaysDateInDays = function (){
-			$scope.daysSinceYear = 0;
+			
 			switch (new Date().getMonth()) {
 				case 0:
 					$scope.daysSinceYear =0;
@@ -396,6 +396,7 @@ function($scope,$http){
 			}
 			
 			$scope.daysSinceYear += (new Date().getDate());
+			$scope.game.calendar.daysCount = $scope.daysSinceYear;
 			//console.log($scope.daysSinceYear);
 			//return $scope.daysSinceYear;
 			
@@ -405,7 +406,7 @@ function($scope,$http){
 	// Gets time for console timestamps output
 	$scope.getDatetime = function() {
 		var today = new Date();	
-		console.log($scope.todaysDateInDays());
+		console.log($scope.daysSinceYear);
 		return today.getHours() +":"+ ((today.getMinutes() < 10)?"0":"") +today.getMinutes() + ":"+ ((today.getSeconds() < 10)?"0":"") + today.getSeconds();	
 		};
 
@@ -420,15 +421,26 @@ function($scope,$http){
 		$scope.gameOutputConsoleList = [
 			{content:'You are a poor student wandering through college', number:0, timestamp:$scope.getDatetime()}, 		
 		];
+		
+		$scope.playerGender = "male";
 	
-	// TODO : Get Player name from database
+	//  : Get Player name from database
 	$http.get("/users/me", {withCredentials: true})
 	.then(
 		function success(data) {
 			console.log(data);
 			user = data.data;
-			$scope.playerName = user.username;
-			$scope.playerBodyLevel = user.body_type;
+			$scope.playerName = user.username;			
+			$scope.playerGender = user.gender;
+			//console.log($scope.playerGender);
+			
+			if($scope.playerGender == "male")
+			{
+				$scope.playerGenderMale = true;
+			}
+			else{
+				$scope.playerGenderMale =false;
+			}
 		}, 
 		function error(err) {
 			console.log(err);
@@ -441,10 +453,10 @@ function($scope,$http){
 		return $scope.playerName;
 	};	
 
-	
-	$scope.getPlayerBodyLevel = function(){
-		return $scope.playerBodyLevel;
-	};
+	$scope.getPlayerGender = function (){
+		return $scope.getPlayerGender;
+	}
+
 	
 	//growth function
 	$scope.globalCostGrowthRate = 0.05;
