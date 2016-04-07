@@ -20,7 +20,7 @@ var UserSchema = new Schema({
     hashed_password: String,
     gender: String,
     
-	game: {
+game: {
 		gameOutputConsoleEntryCount:  Number,
 		player:{
 			energy: Number
@@ -47,7 +47,22 @@ var UserSchema = new Schema({
 			count: Number,
 			rate: Number,
 			unlocked: Boolean			
+		},
+		chocolate:{
+			count: Number,
+			rate: Number,
+			unlocked: Boolean			
 		},	
+		energyDrink:{
+			count: Number,
+			rate: Number,
+			unlocked: Boolean			
+		},	
+		flower:{
+			count: Number,
+			rate: Number,
+			unlocked: Boolean			
+		},			
 		classes:{
 			tabUnlocked: Boolean,
 			eng101:{
@@ -92,10 +107,21 @@ var UserSchema = new Schema({
 				workingAsCEO: Boolean
 			}
 		},
+		relationships:{
+				girlfriend1:{
+					name: String,
+					unlocked: Boolean,
+					progress: Number,
+					level: Number,
+					tooltip: String,
+					arrayIndex: Number,
+				}
+			},
 		calendar:{
 			daysCount: Number,
 			yearsCount: Number
 		}
 	}
+	//game object over
 });
 mongoose.model('User', UserSchema);

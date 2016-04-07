@@ -58,6 +58,8 @@
 							Energy:{{getPlayerEnergy()}}%
 						</div>
 					</div>	
+					<h4 ng-show="getGirlfriend1Unlocked()"> Body Level: {{getBodyLevelString()}}</h4>
+					<h4 ng-show="getGirlfriend1Unlocked()"> Body XP: {{getBodyXp()}}/{{getBodyXpToLevel()}}</h4>
 						
 					<div ng-repeat="entry in selfCurrencyList">
 						<h4 ng-show="entry.unlocked()">{{entry.title}}<span ng-show="entry.showCount">: {{entry.count()}} </span> <span ng-show="entry.showRate"> ({{entry.rate()}}/sec) </span> <span style="font-size:14px" ng-show="entry.showUse"> <a href="#" ng-click="entry.useClick()">{{entry.useText}}</a> </span> </h4>
@@ -130,7 +132,7 @@
 											<span class="caret"></span></button>
 											<ul class="dropdown-menu giftdropdown">
 												<div ng-repeat="dropdownEntry in entry.dropdown">
-													<li> <button class="btn btn-primary tooltip-button" ng-class="dropdownEntry.colorCondition()" ng-click="dropdownEntry.clickCondition()"> {{dropdownEntry.buttonText}}  <span class="tooltip"> test</span>  </button></li>	
+													<li> <button class="btn btn-primary tooltip-button" ng-class="dropdownEntry.colorCondition()" ng-click="dropdownEntry.clickCondition()"> {{dropdownEntry.buttonText}}  <span class="tooltip"> {{dropdownEntry.toolTip}} </span>  </button></li>	
 												</div>										
 										  </ul>											
 										</div>												
@@ -148,7 +150,10 @@
 							</div>
 						</div>
 						<div id="gymTab" class="tab-pane fade">
-							<h4> Gym </h4>						
+							<h4> Gym </h4>	
+							<div ng-repeat="entry in gymList"> 					
+								<button class="btn tooltip-button" ng-class="entry.colorCondition()" ng-show="entry.unlocked()" ng-click="entry.clickCondition()">{{entry.buttonText}} <span class="badge" >{{entry.cost}}</span> <span class="tooltip"> {{entry.toolTip}}</span></button> 
+							</div>								
 						</div>
 					</div>
 				</div>

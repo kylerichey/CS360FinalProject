@@ -30,13 +30,14 @@ function($scope,$http){
 	/* ******************************************
 	******** * Game Object	********************
 	*********************************************/
-	$scope.game = {};
+	//$scope.game = {};
 	
 	$scope.game={
 			gameOutputConsoleEntryCount:  0,
 			player:{
 				energy: 50,
-				//name
+				bodyLevel:1,
+				bodyXp :0,				
 			},			
 			penny:{ 
 				count: 0,
@@ -69,6 +70,21 @@ function($scope,$http){
 				count:0,
 				rate:0,
 				unlocked:false,
+			},
+			flower:{
+				count : 0,
+				rate :0,
+				unlocked:0,
+			},
+			gatorade:{
+				count : 0,
+				rate :0,
+				unlocked:0,
+			},
+			yogaMat:{
+				count : 0,
+				rate :0,
+				unlocked:0,
 			},
 			classes:{
 				tabUnlocked: false,
@@ -131,11 +147,12 @@ function($scope,$http){
 		};
 	
 	$scope.initGame = function() {
-		$scope.game={
+	$scope.game={
 			gameOutputConsoleEntryCount:  0,
 			player:{
 				energy: 50,
-				//name
+				bodyLevel:1,
+				bodyXp :0,				
 			},			
 			penny:{ 
 				count: 0,
@@ -168,6 +185,21 @@ function($scope,$http){
 				count:0,
 				rate:0,
 				unlocked:false,
+			},
+			flower:{
+				count : 0,
+				rate :0,
+				unlocked:0,
+			},
+			gatorade:{
+				count : 0,
+				rate :0,
+				unlocked:0,
+			},
+			yogaMat:{
+				count : 0,
+				rate :0,
+				unlocked:0,
 			},
 			classes:{
 				tabUnlocked: false,
@@ -228,6 +260,7 @@ function($scope,$http){
 				yearsCount: (new Date().getFullYear()),
 			},
 		};
+		//game object over
 	};
 
 
@@ -529,6 +562,9 @@ function($scope,$http){
 		$scope.game.jobs.tabUnlocked= true;
 		$scope.game.jobs.myspace.unlocked = true;	
 		$scope.unlimitedPlayerEnergy = true;
+		$scope.game.jobs.myspace.progress = 100;
+		$scope.game.jobs.mcdonalds.progress = 100
+		
 		
 		
 	};
@@ -814,6 +850,57 @@ function($scope,$http){
 	$scope.useChocolatesOnSelf = function (){
 		
 	}
+	
+	
+		 
+	 	/* ******************************************
+	******** *Flowers		************************
+	*********************************************/
+
+
+	$scope.getFlowerCount = function(){
+		return  Math.round($scope.game.flower.count *100)/100;	
+	};
+	
+	$scope.getFlowerRate = function(){		
+		return  Math.round($scope.game.flower.rate *1000)/100;	
+	};
+	
+	 $scope.getFlowerUnlocked = function(){
+		return  $scope.game.flower.unlocked; 
+	 };
+	 
+			 
+	 	/* ******************************************
+	******** *Gatorade		************************
+	*********************************************/
+
+
+	$scope.getGatoradeCount = function(){
+		return  Math.round($scope.game.gatorade.count *100)/100;	
+	};	
+
+	
+	 $scope.getGatoradeUnlocked = function(){
+		return  $scope.game.gatorade.unlocked; 
+	 };
+	 
+	 		 
+	 	/* ******************************************
+	******** *Yoga Mat		************************
+	*********************************************/
+
+
+	$scope.getYogaMatCount = function(){
+		return  Math.round($scope.game.yogaMat.count *100)/100;	
+	};
+	
+
+	
+	 $scope.getYogaMatUnlocked = function(){
+		return  $scope.game.yogaMat.unlocked; 
+	 };
+	 
 
 	
 	/* ******************************************
@@ -1293,7 +1380,7 @@ function($scope,$http){
 		  if($scope.game.jobs.myspace.progress>=100){
 				$scope.resetCurrentJob();
 				$scope.game.jobs.myspace.workingAsCEO= true;				
-				$scope.game.jobs.pennyRate = 0.100;
+				$scope.game.jobs.pennyRate = 1.000;
 		  }	else {
 			  $scope.addEntryToConsole("You need more xp to do that job");	
 		  }	
@@ -1485,6 +1572,39 @@ function($scope,$http){
 			showUse: true,
 			useClick: $scope.useChocolatesOnSelf,
 			useText: "Eat",
+		},
+		{
+			title: "Flower",
+			count: $scope.getFlowerCount,
+			showCount: true,
+			rate: null,
+			showRate: false,
+			unlocked: $scope.getFlowerUnlocked,
+			showUse: false,
+			useClick: null,
+			useText: null,
+		},
+				{
+			title: "Gatorade",
+			count: $scope.getGatoradeCount,
+			showCount: true,
+			rate: null,
+			showRate: false,
+			unlocked: $scope.getGatoradeUnlocked,
+			showUse: false,
+			useClick: null,
+			useText: null,
+		},
+				{
+			title: "Yoga Mat",
+			count: $scope.getYogaMatCount,
+			showCount: true,
+			rate: null,
+			showRate: false,
+			unlocked: $scope.getYogaMatUnlocked,
+			showUse: false,
+			useClick: null,
+			useText: null,
 		},
 	
 	];
@@ -1733,7 +1853,7 @@ function($scope,$http){
 					colorCondition:$scope.myspaceCEOColorCondition,
 					unlocked:$scope.getMyspaceCEOUnlocked,
 					clickCondition: $scope.myspaceCEO,
-					reward: "1.0 p/s",
+					reward: "10.0 p/s",
 				}
 				
 			]
@@ -2087,7 +2207,7 @@ function($scope,$http){
 	 
 	 /////Level 2
 	 
-	  $scope.game.relationships.girlfriend1.level2Buttons = function (){
+	  $scope.getGirlfriend1Level2Buttons = function (){
 		 if ($scope.game.relationships.girlfriend1.level ==1)
 		 {
 			 return true;
@@ -2098,32 +2218,86 @@ function($scope,$http){
 		 
 	 }
 	 
+	 $scope.girlfriend1NewFriendIncrementProgress = function (incAmount){
+		 if (($scope.game.relationships.girlfriend1.progress + incAmount) >=100){
+			 $scope.game.relationships.girlfriend1.progress =100;
+			 $scope.addEntryToConsole("The only way to level up again is with a date");	
+			 
+		 }else{
+			 $scope.game.relationships.girlfriend1.progress +=incAmount;
+		 }
+	 }
+	 
 	 $scope.girlfriend1NewFriendHangout = function (){
+		  $scope.girlfriend1NewFriendIncrementProgress(5);
+		 
+	 }
+	 
+	 $scope.girlfriend1FriendHangoutColorCondition = function (){
+		 
+		 	
+			return "btn-primary";	  
+		
 		 
 	 }
 	
 	 
 	 $scope.girlfriend1NewFriendAskDate = function (){
-		 
+		 if($scope.game.player.bodyLevel>=3 && $scope.game.relationships.girlfriend1.progress >=100) {
+			 $scope.addEntryToConsole("Now shes your girlfriend");	
+			 //level up
+		 }
+		 else{
+			  $scope.addEntryToConsole("You not strong enough to ask her out");	
+		 }
+	 }
+	 
+	 $scope.girlfriend1NewFriendAskDateColorCondition = function (){
+		 	if($scope.game.player.bodyLevel>=3 && $scope.game.relationships.girlfriend1.progress >=100) {
+			return "btn-primary";	  
+		} else {
+			return "btn-default";  
+	    }
 	 }
 	 
 	 $scope.girlfriend1GiveChocolate = function (){
 		 
 		 if($scope.game.chocolate.count>=1) {
 			 $scope.game.chocolate.count-=1;
-			 $scope.game.relationships.girlfriend1.progress +=5;
+			 $scope.girlfriend1NewFriendIncrementProgress(5);
+		 }else{
+			  $scope.addEntryToConsole("You don't have chocolate");	
 		 }
 		 
 	 }
 	 
-	 $scope.girlfriend1GiveChocolateColorCondition = function (){
-		 
+	 $scope.girlfriend1GiveChocolateColorCondition = function (){		 
 		if($scope.game.chocolate.count>=1) {
 			return "btn-primary";	  
 		} else {
 			return "btn-default";  
 	    }		 
 	 }
+	 
+	 	$scope.girlfriend1GiveFlower = function (){
+		 if($scope.game.flower.count>=1) {
+			 $scope.game.flower.count-=1;
+			  $scope.girlfriend1NewFriendIncrementProgress(5);
+		 }
+		 else{
+			  $scope.addEntryToConsole("You don't have any flower");	
+		 }
+		 
+		
+	}
+	
+	$scope.girlfriend1GiveChocolateColorCondition = function (){
+			if($scope.game.flower.count>=1) {
+			return "btn-primary";	  
+		} else {
+			return "btn-default";  
+	    }	
+	}
 
 	
 		/* ******************************************
@@ -2135,7 +2309,7 @@ function($scope,$http){
 		/* ******************************************
 	******** *Relationship List  ********************
 	*********************************************/	
-	
+
 		
 	$scope.relationshipList = [
 		//girlfriend1
@@ -2149,18 +2323,21 @@ function($scope,$http){
 			tabsUnlocked: $scope.getGirlfriend1Unlocked,
 			progress: $scope.getGirlfriend1Progress,
 			level: $scope.getGirlfriend1LevelText,
-			dropdownUnlocked: $scope.game.relationships.girlfriend1.level2Buttons,
+			dropdownUnlocked:  $scope.getGirlfriend1Level2Buttons ,
 			dropdownText: "Give her a gift",
+			
 			dropdown:[
 			{
 				buttonText:"Chocolate",
 				clickCondition: $scope.girlfriend1GiveChocolate,
 				colorCondition : $scope.girlfriend1GiveChocolateColorCondition,
+				toolTip: "Just a few though, don't want her to get fat",
 			},
 			{
 				buttonText:"Flowers",
 				clickCondition: $scope.girlfriend1GiveFlower,
 				colorCondition : $scope.girlfriend1GiveChocolateColorCondition,
+				toolTip: "Don't let our love fern die",
 			},
 			],
 			body:[
@@ -2209,13 +2386,17 @@ function($scope,$http){
 			{
 				buttonText: "Hangout",
 				clickCondition: $scope.girlfriend1NewFriendHangout,
-				buttonUnlocked:$scope.game.relationships.girlfriend1.level2Buttons,
+				colorCondition:$scope.girlfriend1FriendHangoutColorCondition,
+				buttonUnlocked: $scope.getGirlfriend1Level2Buttons ,
+				toolTip : "Add activities",
 				
 			},			
 			{
 				buttonText: "Ask on Date",
 				clickCondition: $scope.girlfriend1NewFriendAskDate,
-				buttonUnlocked:$scope.game.relationships.girlfriend1.level2Buttons,
+				buttonUnlocked: $scope.getGirlfriend1Level2Buttons ,
+				colorCondition: $scope.girlfriend1NewFriendAskDateColorCondition,
+				toolTip : "Ask her on a date. Requires New Friend progress 100% and Body Level: Acceptable or better",
 				
 			},
 			],
@@ -2277,27 +2458,209 @@ function($scope,$http){
 		
 	}	
 	
-	
-	$scope.storeList = [
-	{
-		buttonText: "5 Hour Energy",
-		toolTip:"Use to regen 100% energy",
-		cost: "50 Penny",
-		clickCondition: $scope.storeFiveHourEnergy,
-		colorCondition: $scope.storeFiveHourEnergyColorCondition,
+	$scope.storeFlower = function (){
 		
-	},
-	{
-		buttonText: "Box of Chocolates",
-		toolTip:"Eat them yourself or give to someone special",
-		cost: "50 Penny",
-		clickCondition: $scope.storeBoxChocolate,
-		colorCondition: $scope.storeBoxChocolateColorCondition,
+		if($scope.game.penny.count>=50){
+			$scope.game.penny.count -=50;
+			$scope.game.flower.count +=1;
+			if(!$scope.game.flower.unlocked){
+				$scope.game.flower.unlocked = true;
+			}
+		}
+	}
+	
+	$scope.storeFlowerColorCondition = function (){
+		
+	if($scope.game.penny.count>=50)
+	  {
+		  return "btn-primary";	  
+	  } else {
+		  return "btn-default";  
+	  }
 		
 	}
+	
+	$scope.storeGatorade = function (){
+		
+		if($scope.game.penny.count>=50){
+			$scope.game.penny.count -=50;
+			$scope.game.gatorade.count +=1;
+			if(!$scope.game.gatorade.unlocked){
+				$scope.game.gatorade.unlocked = true;
+			}
+		}
+	}
+	
+	$scope.storeGatoradeColorCondition = function (){
+		
+	if($scope.game.penny.count>=50)
+	  {
+		  return "btn-primary";	  
+	  } else {
+		  return "btn-default";  
+	  }
+		
+	}
+	
+	$scope.storeYogaMat = function (){
+		
+		if($scope.game.penny.count>=50){
+			$scope.game.penny.count -=50;
+			$scope.game.yogaMat.count +=1;
+			if(!$scope.game.yogaMat.unlocked){
+				$scope.game.yogaMat.unlocked = true;
+			}
+		}
+	}
+	
+	$scope.storeYogaMatColorCondition = function (){
+		
+	if($scope.game.penny.count>=50)
+	  {
+		  return "btn-primary";	  
+	  } else {
+		  return "btn-default";  
+	  }
+		
+	}
+	
+	
+	$scope.storeList = [
+		{
+			buttonText: "5 Hour Energy",
+			toolTip:"Use to regen 100% energy",
+			cost: "50 Penny",
+			clickCondition: $scope.storeFiveHourEnergy,
+			colorCondition: $scope.storeFiveHourEnergyColorCondition,
+			
+		},
+		{
+			buttonText: "Box of Chocolates",
+			toolTip:"Eat them yourself or give to someone special",
+			cost: "50 Penny",
+			clickCondition: $scope.storeBoxChocolate,
+			colorCondition: $scope.storeBoxChocolateColorCondition,
+			
+		},
+		{
+			buttonText: "Flowers",
+			toolTip:"They look nice in your apartment or your girlfriends",
+			cost: "50 Penny",
+			clickCondition: $scope.storeFlower,
+			colorCondition: $scope.storeFlowerColorCondition,
+			
+		},
+		{
+			buttonText: "Gatorade",
+			toolTip:"Quench your thrist!",
+			cost: "50 Penny",
+			clickCondition: $scope.storeGatorade,
+			colorCondition: $scope.storeGatoradeColorCondition,
+			
+		},
+		{
+			buttonText: "Yoga Mat",
+			toolTip:"Good for naps and I guess some yoga",
+			cost: "50 Penny",
+			clickCondition: $scope.storeYogaMat,
+			colorCondition: $scope.storeYogaMatColorCondition,
+			
+		}
 	];
 	
 	
+	$scope.incrementBodyXp = function (incAmount){
+		if(($scope.game.player.bodyXp + incAmount)>= ($scope.game.player.bodyLevel * 100)){			
+			$scope.game.player.bodyXp = ($scope.game.player.bodyXp + incAmount) - ($scope.game.player.bodyLevel * 100);
+			$scope.game.player.bodyLevel+=1;
+			
+		}
+		else{
+			$scope.game.player.bodyXp+= incAmount;
+		}
+			
+	}
+	
+	$scope.gymBarbell = function (){
+		if($scope.game.gatorade.count>=1){
+			$scope.game.gatorade.count-=1;
+			$scope.incrementBodyXp(10);
+		}else{
+			$scope.addEntryToConsole("You don't have any gatorade");
+		}			
+	}
+	
+	
+	
+	
+	$scope.gymBarbellColorCondition = function (){
+		if($scope.game.gatorade.count>=1){
+			return "btn-primary";	  
+		}else{
+			return "btn-default";	
+		}
+	}
+	
+	
+		$scope.gymYoga = function (){
+		if($scope.game.yogaMat.count>=1){
+			$scope.incrementBodyXp(15);
+			$scope.game.yogaMat.count-=1;
+		}else{
+			$scope.addEntryToConsole("You don't have any gatorade");
+		}			
+	}
+	
+		$scope.gymYogaColorCondition = function (){
+		 	if($scope.game.yogaMat.count>=1){
+			return "btn-primary";	  
+		}else{
+			return "btn-default";	
+		}
+	}
+	
+	
+	$scope.getBodyXp = function(){
+		return $scope.game.player.bodyXp;
+	}	
+
+	
+	$scope.getBodyLevelString = function (){
+			switch ($scope.game.player.bodyLevel) {
+				case 1:
+					return "Total wuss";
+					break;
+				case 2:
+					return "Weak";
+					break;
+				case 3:
+					return "Acceptable";
+					break;
+			}
+	}
+	
+	$scope.getBodyXpToLevel = function (){
+		return ($scope.game.player.bodyLevel * 100);
+	}
+	
+	$scope.gymList = [
+		{
+			buttonText: "Curl 1 pound barbell",
+			colorCondition: $scope.gymBarbellColorCondition,
+			clickCondition:$scope.gymBarbell,
+			cost: "1 Gatorade",
+			toolTip:"You can barely curl a pound",
+			unlocked: true,
+		},
+		{
+			buttonText:"Take Yoga",
+			colorCondition: $scope.gymYogaColorCondition,
+			clickCondition:$scope.gymYoga,
+			cost: "1 Yoga Mat",
+			toolTip:"Fun to do and to watch",
+			unlocked: true,
+		},
+	];	
 	
 	
 	// End of main function
