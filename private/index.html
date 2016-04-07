@@ -8,8 +8,8 @@
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"> </script>			
 		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>  	
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"> </script>
-					
-		<script src="javascripts/coreController.js"></script>					
+		<script src="javascripts/coreController.js"></script>
+		
 		
 		<title>CS 360 Final Project - The Student Game</title>
 	</head>	
@@ -18,8 +18,7 @@
 		<div class="container" >                                 
 			<div class="row">
 				<div class="col-md-9">
-					<h2>The Student Game</h2>	
-									
+					<h2>The Student Game</h2>									
 				</div>	
 				<div class="col-md-3">
 					<div class="btn-group" role="group" aria-label="...">
@@ -46,6 +45,8 @@
 				<li ng-show="getClassTabUnlocked()"><a data-toggle="tab" href="#classTab">Classes</a></li>  
 				<li ng-show="getJobsTabUnlocked()"><a data-toggle="tab" href="#jobTab">Employment</a></li>
 				<li ng-show="getJobsTabUnlocked()"><a data-toggle="tab" href="#relationshipTab">Relationships</a></li>  
+				<li ng-show="getGirlfriend1Unlocked()"><a data-toggle="tab" href="#storeTab">Store</a></li> 
+				<li ng-show="getGirlfriend1Unlocked()"><a data-toggle="tab" href="#gymTab">Gym</a></li> 
 			</ul>	
 			<br>			
 			<div class="row">
@@ -59,7 +60,7 @@
 					</div>	
 						
 					<div ng-repeat="entry in selfCurrencyList">
-						<h4 ng-show="entry.unlocked()">{{entry.title}}<span ng-show="entry.showCount">: {{entry.count()}} </span> <span ng-show="entry.showRate"> ({{entry.rate()}}/sec) </span> </h4>
+						<h4 ng-show="entry.unlocked()">{{entry.title}}<span ng-show="entry.showCount">: {{entry.count()}} </span> <span ng-show="entry.showRate"> ({{entry.rate()}}/sec) </span> <span style="font-size:14px" ng-show="entry.showUse"> <a href="#" ng-click="entry.useClick()">{{entry.useText}}</a> </span> </h4>
 					</div>										
 				</div>
 				<div class="col-md-4">
@@ -115,17 +116,39 @@
 							<div ng-repeat="entry in relationshipList"> 						
 								<div class="panel panel-primary" ng-show="entry.unlocked()">
 									<div class="panel-heading">
-										<button class="btn tooltip-button" ng-class="entry.colorCondition()" ng-click="entry.clickCondition()"> {{entry.buttonText()}} <span class="tooltip"> {{entry.toolTip()}}</span> <span class="badge" >{{entry.energyCost()}}</span> </button> 
-										
-										
+										<button class="btn tooltip-button" ng-class="entry.colorCondition()" ng-click="entry.clickCondition()"> {{entry.buttonText()}} <span class="tooltip"> {{entry.toolTip()}}</span> <span class="badge" >{{entry.energyCost()}}</span> </button>
+										<div class="status" ng-show="entry.tabsUnlocked()"> {{entry.level()}} </div>
+										<div class="progress" ng-show="entry.tabsUnlocked()" > 											
+											<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{entry.progress()}}" aria-valuemin="0" aria-valuemax="100" style="width:{{entry.progress()}}%">
+												{{entry.progress()}}%
+											</div>
+										</div>										
 									</div>
-									<div class="panel-body" ng-show="entry.tabsUnlocked()">
-										<button class="btn btn-primary"> Ask on a date</button> 
+									<div class="panel-body" ng-show="entry.tabsUnlocked()">										 
+										<div class="dropdown" ng-show="entry.dropdownUnlocked()"  >
+											<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">{{entry.dropdownText}}
+											<span class="caret"></span></button>
+											<ul class="dropdown-menu giftdropdown">
+												<div ng-repeat="dropdownEntry in entry.dropdown">
+													<li> <button class="btn btn-primary tooltip-button" ng-class="dropdownEntry.colorCondition()" ng-click="dropdownEntry.clickCondition()"> {{dropdownEntry.buttonText}}  <span class="tooltip"> test</span>  </button></li>	
+												</div>										
+										  </ul>											
+										</div>												
+										<div ng-repeat="bodyEntry in entry.body"> 
+											<button class="btn tooltip-button" ng-class="bodyEntry.colorCondition()" ng-show="bodyEntry.buttonUnlocked()" ng-click="bodyEntry.clickCondition()"> {{bodyEntry.buttonText}} <span class="tooltip"> {{bodyEntry.toolTip}}</span> <span class="badge" >{{bodyEntry.cost}}</span> </button>				 
+										</div>
 									</div>
-								
 							    </div>
 								<br>
 							</div>
+						</div>
+						<div id="storeTab" class="tab-pane fade">							
+							<div ng-repeat="entry in storeList"> 	
+								<button class="btn tooltip-button" ng-class="entry.colorCondition()" ng-click="entry.clickCondition()"> {{entry.buttonText}} <span class="tooltip"> {{entry.toolTip}}</span> <span class="badge" >{{entry.cost}}</span> </button>
+							</div>
+						</div>
+						<div id="gymTab" class="tab-pane fade">
+							<h4> Gym </h4>						
 						</div>
 					</div>
 				</div>
@@ -175,7 +198,7 @@
 							<li><p>Base Currencies</p></li>	
 							<li><p>Classes</p></li>	
 							<li><p>Jobs and Employment</p></li>	
-							<li><p>User Accounts, Authenicated Login</p></li>	
+							<li><p>User Accounts, Authenticated Login</p></li>	
 							<li><p>Cloud based game save state and load</p></li>	
 						</ul>	
 					<li><p>In Development</p></li>	

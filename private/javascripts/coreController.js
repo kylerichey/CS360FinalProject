@@ -60,6 +60,16 @@ function($scope,$http){
 				rate: 0,
 				unlocked: false,			
 			},	
+			chocolate:{
+				count:0,
+				rate:0,
+				unlocked:false,
+			},
+			energyDrink:{
+				count:0,
+				rate:0,
+				unlocked:false,
+			},
 			classes:{
 				tabUnlocked: false,
 				eng101:{
@@ -102,6 +112,16 @@ function($scope,$http){
 					workingAsITSupport: false,
 					workingAsSeniorDev: false,
 					workingAsCEO:false,
+				},
+			},
+			relationships:{
+				girlfriend1:{
+					name: "notUnlocked",
+					unlocked: false,
+					progress: 0,
+					level: 0,
+					tooltip: "notUnlocked",
+					arrayIndex: 0,
 				},
 			},
 			calendar:{
@@ -139,6 +159,16 @@ function($scope,$http){
 				rate: 0,
 				unlocked: false,			
 			},	
+			chocolate:{
+				count:0,
+				rate:0,
+				unlocked:false,
+			},
+			energyDrink:{
+				count:0,
+				rate:0,
+				unlocked:false,
+			},
 			classes:{
 				tabUnlocked: false,
 				eng101:{
@@ -181,6 +211,16 @@ function($scope,$http){
 					workingAsITSupport: false,
 					workingAsSeniorDev: false,
 					workingAsCEO:false,
+				},
+			},
+			relationships:{
+				girlfriend1:{
+					name: "notUnlocked",
+					unlocked: false,
+					progress: 0,
+					level: 0,
+					tooltip: "notUnlocked",
+					arrayIndex: 0,
 				},
 			},
 			calendar:{
@@ -250,6 +290,11 @@ function($scope,$http){
 		$scope.game.penny.rate = $scope.game.jobs.pennyRate;  //if need to add new way to get penny add here
 		$scope.game.penny.count =  $scope.game.penny.count + $scope.game.penny.rate;	
 		$scope.game.knowledge.count = $scope.game.knowledge.count + $scope.game.knowledge.rate;
+		
+		if($scope.unlimitedPlayerEnergy)
+		{
+			$scope.game.player.energy = 100;
+		}
 		
 		$scope.updateJobProgressBars();		
 	};
@@ -459,16 +504,19 @@ function($scope,$http){
 
 	
 	//growth function
-	$scope.globalCostGrowthRate = 0.05;
+	$scope.globalCostGrowthRate = 0.02;
 	
 	
 	
 		/* ******************************************
 	******** * Free Resources	*****************
 	*********************************************/
-
+	$scope.unlimitedPlayerEnergy= false;
 		
 	$scope.giveFreePenny = function (){
+		$scope.initGame();
+		$scope.game.player.energy =100;
+		$scope.girlfriend1ClickCondition();
 		$scope.game.penny.count += 10000;
 		$scope.game.pencil.count += 10000;
 		$scope.game.book.count += 10000;	
@@ -479,7 +527,9 @@ function($scope,$http){
 		$scope.game.classes.cs142.unlocked = true;
 		$scope.game.classes.tabUnlocked = true;
 		$scope.game.jobs.tabUnlocked= true;
-		$scope.game.jobs.myspace.unlocked = true;
+		$scope.game.jobs.myspace.unlocked = true;	
+		$scope.unlimitedPlayerEnergy = true;
+		
 		
 	};
 	
@@ -542,7 +592,7 @@ function($scope,$http){
 		{
 			return "December " + ($scope.game.calendar.daysCount - 304)+ " " +$scope.game.calendar.yearsCount;
 		}
-		else{
+		else if ($scope.game.calendar.daysCount<365){
 			$scope.game.calendar.daysCount=1;
 			$scope.game.calendar.yearsCount += 1;
 			
@@ -718,6 +768,52 @@ function($scope,$http){
 	 $scope.getKnowledgeUnlocked = function(){
 		return  $scope.game.knowledge.unlocked; 
 	 };
+	 
+	 	 	/* ******************************************
+	******** *Energy Drink	************************
+	*********************************************/	
+
+	
+	$scope.getEnergyDrinkCount = function(){
+		return  Math.round($scope.game.energyDrink.count *100)/100;	
+	};
+	
+	$scope.getEnergyDrinkRate = function(){		
+		return  Math.round($scope.game.energyDrink.rate *1000)/100;	
+	};
+	
+	 $scope.getEnergyDrinkUnlocked = function(){
+		return  $scope.game.energyDrink.unlocked; 
+	 };
+
+	 $scope.useEnergyDrink = function (){
+	if($scope.game.energyDrink.count >=1){
+		$scope.game.energyDrink.count -=1;
+		$scope.game.player.energy =100;
+	}
+}
+	 
+	 	/* ******************************************
+	******** *Chocolate		************************
+	*********************************************/	
+
+	
+	$scope.getChocolateCount = function(){
+		return  Math.round($scope.game.chocolate.count *100)/100;	
+	};
+	
+	$scope.getChocolateRate = function(){		
+		return  Math.round($scope.game.chocolate.rate *1000)/100;	
+	};
+	
+	 $scope.getChocolateUnlocked = function(){
+		return  $scope.game.chocolate.unlocked; 
+	 };
+	 
+	 
+	$scope.useChocolatesOnSelf = function (){
+		
+	}
 
 	
 	/* ******************************************
@@ -1320,6 +1416,7 @@ function($scope,$http){
 	******** *Self Currency List ********************
 	*********************************************/
 
+
 	
 	$scope.selfCurrencyList = [	
 		{
@@ -1329,6 +1426,10 @@ function($scope,$http){
 			rate: $scope.getPennyRate,
 			showRate: true,
 			unlocked: true,
+			showUse: false,
+			useClick: null,
+			useText: null,
+			
 		},
 		{
 			title: "Pencil",
@@ -1337,6 +1438,9 @@ function($scope,$http){
 			rate: null,
 			showRate: false,
 			unlocked: $scope.getPencilUnlocked,
+			showUse: false,
+			useClick: null,
+			useText: null,
 		},
 		{
 			title: "Book",
@@ -1345,6 +1449,9 @@ function($scope,$http){
 			rate: null,
 			showRate: false,
 			unlocked: $scope.getBookUnlocked,
+			showUse: false,
+			useClick: null,
+			useText: null,
 		},
 		{
 			title: "Knowledge",
@@ -1353,7 +1460,32 @@ function($scope,$http){
 			rate: $scope.getKnowledgeRate,
 			showRate: true,
 			unlocked: $scope.getKnowledgeUnlocked,
-		}
+			showUse: false,
+			useClick: null,
+			useText: null,
+		},
+		{
+			title: "Energy Drink",
+			count: $scope.getEnergyDrinkCount,
+			showCount: true,
+			rate: $scope.getEnergyDrinkRate,
+			showRate: false,
+			unlocked: $scope.getEnergyDrinkUnlocked,
+			showUse: true,
+			useClick: $scope.useEnergyDrink,
+			useText: "Drink",
+		},
+		{
+			title: "Chocolate",
+			count: $scope.getChocolateCount,
+			showCount: true,
+			rate: $scope.getChocolateRate,
+			showRate: false,
+			unlocked: $scope.getChocolateUnlocked,
+			showUse: true,
+			useClick: $scope.useChocolatesOnSelf,
+			useText: "Eat",
+		},
 	
 	];
 	
@@ -1661,15 +1793,15 @@ function($scope,$http){
 		$scope.girlfriendAttributes=[
 		{
 			name: "Katie",
-			hair:"Blonde",
+			tooltip:"A cute blonde, 5'9. Enjoys volleyball and cats",
 		},
 		{
 			name:"Mckayla",
-			hair:"Brown",
+			tooltip:"An avid traveller and adventurer. Been to more countries than you've ever heard of.",
 		},
 		{
 			name:"Jessica",
-			hair:"Brown",
+			tooltip:"A smart brunette. CS Major. Wears glasses",
 		},
 	];
 	
@@ -1689,39 +1821,43 @@ function($scope,$http){
 		},
 	];
 	
-	$scope.girlfriend1Unlocked = false;	
-	$scope.girlfriend1 =$scope.girlfriendAttributes[0]; 
-	$scope.girlfriend1Name = $scope.girlfriend1.name;
 	
-		
+
+
+	
+	
+	
 
 		
 	/* ******************************************
 	******** *Girlfriend 1 ********************
 	*********************************************/	
+	$scope.girlfriend1 =$scope.girlfriendAttributes[$scope.game.relationships.girlfriend1.arrayIndex];
 	
 	$scope.getGirlfriend1Name = function (){
-		if($scope.girlfriend1Unlocked == true){
-			return $scope.girlfriend1Name;
+		if($scope.game.relationships.girlfriend1.unlocked){
+			return $scope.game.relationships.girlfriend1.name;
 		}else{			
 			return "Go on the prowl";
 		}
 	};
 	
 	$scope.girlfriend1ClickCondition = function () {
-		if($scope.girlfriend1Unlocked){
-			// add something
+		if($scope.game.relationships.girlfriend1.unlocked){
+			// cliking on existing name does nothing
 		}else if($scope.game.player.energy >=100) {
 			$scope.game.player.energy -=100;
 			if($scope.playerGenderMale){   //get a girlfriend
-				$scope.girlfriend1 =$scope.girlfriendAttributes[(Math.floor((Math.random() * $scope.girlfriendAttributes.length)))]; 
-				$scope.girlfriend1Name = $scope.girlfriend1.name;
-				$scope.girlfriend1Unlocked = true;
+				$scope.game.relationships.girlfriend1.arrayIndex = (Math.floor((Math.random() * $scope.girlfriendAttributes.length))); 
+				$scope.girlfriend1 = $scope.girlfriendAttributes[$scope.game.relationships.girlfriend1.arrayIndex];
+				$scope.game.relationships.girlfriend1.name = $scope.girlfriend1.name;
+				$scope.game.relationships.girlfriend1.tooltip = $scope.girlfriend1.tooltip;				
+				$scope.game.relationships.girlfriend1.unlocked = true;
 			}
 			else {   //get a boyfriend
-				$scope.girlfriend1 =$scope.boyfriendAttributes[(Math.floor((Math.random() * $scope.boyfriendAttributes.length)))]; 
-				$scope.girlfriend1Name = $scope.girlfriend1.name;
-				$scope.girlfriend1Unlocked = true;
+				//$scope.girlfriend1 =$scope.boyfriendAttributes[(Math.floor((Math.random() * $scope.boyfriendAttributes.length)))]; 
+				//$scope.$scope.game.relationships.girlfriend1.name = $scope.girlfriend1.name;
+				//$scope.game.relationships.girlfriend1.unlocked = true;
 			}
 		} else{
 			 $scope.addEntryToConsole("You don't have enough energy to find a date");	
@@ -1729,16 +1865,16 @@ function($scope,$http){
 	};
 	
 	$scope.getGirlfriend1Tooltip = function (){
-		if($scope.girlfriend1Unlocked){
-			return "Shes cute";
+		if($scope.game.relationships.girlfriend1.unlocked){
+			return $scope.game.relationships.girlfriend1.tooltip;
 		} else{
-			return "Rejection is hard, so don't be too sad";
+			return "Go scope out the hotties";
 		}
 		
 	};
 	
 	$scope.girlfriend1ColorCondition = function (){
-		if($scope.girlfriend1Unlocked){
+		if($scope.game.relationships.girlfriend1.unlocked){
 		   return "btn-primary";	  
 		} 
 		else if($scope.game.player.energy>=100)
@@ -1749,8 +1885,9 @@ function($scope,$http){
 	  }
 	};
 	
+	
 	$scope.girlfriend1EnergyCost = function (){
-			if(!$scope.girlfriend1Unlocked){
+			if(!$scope.game.relationships.girlfriend1.unlocked){
 			return "Energy: 100";
 		} else{
 			return null;
@@ -1758,29 +1895,246 @@ function($scope,$http){
 	}
 	
 	$scope.getGirlfriend1Unlocked=function (){
-		return $scope.girlfriend1Unlocked;
+		return $scope.game.relationships.girlfriend1.unlocked;
 	}
 	
+	 $scope.getGirlfriend1Progress = function (){
+		return $scope.game.relationships.girlfriend1.progress;
+	 }
+	 
+	 $scope.getGirlfriend1LevelText = function (){
+		 switch ($scope.game.relationships.girlfriend1.level) {
+				case 0:
+					return "Acquaintance";
+					break;
+				case 1:
+					return "New Friend";
+					break;
+				
+		}
+	 }
+	 
+	 $scope.girlfriend1AcquaintanceFriendFacebook = function (){
+		 if($scope.game.relationships.girlfriend1.progress==0){
+			if($scope.game.player.energy >=50){
+				$scope.game.relationships.girlfriend1.progress+=25;
+				$scope.game.player.energy -=50;
+			} else{
+			  $scope.addEntryToConsole("You dont have enough energy for that");	
+			}
+		 } else{
+			  $scope.addEntryToConsole("You don't need to do that again");	
+		 }	
+	 }
+	 
+	 
+	 	 $scope.girlfriend1AcquaintanceRelationshipStatus = function (){
+		 if($scope.game.relationships.girlfriend1.progress==25){
+			if($scope.game.player.energy >=60){
+				$scope.game.relationships.girlfriend1.progress+=25;
+				$scope.game.player.energy -=60;
+			} else{
+			  $scope.addEntryToConsole("You dont have enough energy for that");	
+			}
+		 } else{
+			  $scope.addEntryToConsole("You don't need to do that again");	
+		 }	
+	 }
+					
+	 
+	 
+	 $scope.girlfriend1AcquaintanceSendMessage = function (){
+		 if($scope.game.relationships.girlfriend1.progress==50){
+			if($scope.game.player.energy >=70){
+				$scope.game.relationships.girlfriend1.progress+=25;
+				$scope.game.player.energy -=70;
+			} else{
+			  $scope.addEntryToConsole("You dont have enough energy for that");	
+			}
+		 } else{
+			  $scope.addEntryToConsole("You don't need to do that again");	
+		 }	
+	 }	 
+		
+	 
+	 
+	 
+	 $scope.girlfriend1AcquaintanceGetToKnow = function (){
+		 if($scope.game.relationships.girlfriend1.progress==75){
+			if($scope.game.player.energy >=75){
+				$scope.game.relationships.girlfriend1.progress+=25;
+				$scope.game.player.energy -=75;
+			} else{
+			  $scope.addEntryToConsole("You dont have enough energy for that");	
+			}
+		 } else{
+			  $scope.addEntryToConsole("You don't need to do that again");	
+		 }	
+	 }
+					 
+	
+	 
+	 
+	  $scope.girlfriend1AcquaintanceLevelUp = function (){		
+			 $scope.game.relationships.girlfriend1.progress = 0;
+			 $scope.game.relationships.girlfriend1.level +=1;
+		 
+	 }
+	 
+	 
+	 
+	 
+	$scope.girlfriend1AcquaintanceFriendFacebookActive= function (){
+		 if ($scope.game.relationships.girlfriend1.level ==0)
+		 {			 
+			 return true;
+		 }
+		 else{
+			 return false;
+		 }
+		 
+	 }
+	 
+	 	$scope.girlfriend1AcquaintanceRelationshipStatusActive= function (){
+		 if ($scope.game.relationships.girlfriend1.level ==0 && $scope.game.relationships.girlfriend1.progress >=25)
+		 {			 
+			 return true;
+		 }
+		 else{
+			 return false;
+		 }
+		 
+	 }
+	 
+	$scope.girlfriend1AcquaintanceSendMessageActive= function (){
+		 if ($scope.game.relationships.girlfriend1.level ==0 && $scope.game.relationships.girlfriend1.progress >=50)
+		 {			 
+			 return true;
+		 }
+		 else{
+			 return false;
+		 }
+		 
+	 }
+	 
+	 	 
+	$scope.girlfriend1AcquaintanceGetToKnowActive= function (){
+		 if ($scope.game.relationships.girlfriend1.level ==0 && $scope.game.relationships.girlfriend1.progress >=75)
+		 {			 
+			 return true;
+		 }
+		 else{
+			 return false;
+		 }
+		 
+	 }	
+
+	$scope.girlfriend1AcquaintanceLevelUpActive= function (){
+		 if ($scope.game.relationships.girlfriend1.level ==0 && $scope.game.relationships.girlfriend1.progress >=100)
+		 {			 
+			 return true;
+		 }
+		 else{
+			 return false;
+		 }
+		 
+	 }	 	 
+	 
+	 $scope.girlfriend1AcquaintanceFriendFacebookColorCondition = function (){
+		if ($scope.game.relationships.girlfriend1.progress >0){
+		    return "btn-primary";	  
+		} else if($scope.game.player.energy>=50) {
+			return "btn-success";	  
+		} else {
+			return "btn-default";  
+	    }		 
+	 }
+	 
+	 
+	 	 $scope.girlfriend1AcquaintanceRelationshipStatusColorCondition = function (){
+		if ($scope.game.relationships.girlfriend1.progress >25){
+		    return "btn-primary";	  
+		} else if($scope.game.player.energy>=60) {
+			return "btn-success";	  
+		} else {
+			return "btn-default";  
+	    }		 
+	 }
+	 
+	 	 $scope.girlfriend1AcquaintanceSendMessageColorCondition = function (){
+		if ($scope.game.relationships.girlfriend1.progress >50){
+		    return "btn-primary";	  
+		} else if($scope.game.player.energy>=70) {
+			return "btn-success";	  
+		} else {
+			return "btn-default";  
+	    }		 
+	 }
+	 
+	 	 $scope.girlfriend1AcquaintanceGetToKnowColorCondition = function (){
+		if ($scope.game.relationships.girlfriend1.progress >75){
+		    return "btn-primary";	  
+		} else if($scope.game.player.energy>=75) {
+			return "btn-success";	  
+		} else {
+			return "btn-default";  
+	    }		 
+	 }
+	 
+	 $scope.girlfriend1AcquaintanceLevelUpColorCondition = function (){
+		 return "btn-success";
+	 }
+	 
+	 /////Level 2
+	 
+	  $scope.game.relationships.girlfriend1.level2Buttons = function (){
+		 if ($scope.game.relationships.girlfriend1.level ==1)
+		 {
+			 return true;
+		 }
+		 else{
+			 return false;
+		 }
+		 
+	 }
+	 
+	 $scope.girlfriend1NewFriendHangout = function (){
+		 
+	 }
+	
+	 
+	 $scope.girlfriend1NewFriendAskDate = function (){
+		 
+	 }
+	 
+	 $scope.girlfriend1GiveChocolate = function (){
+		 
+		 if($scope.game.chocolate.count>=1) {
+			 $scope.game.chocolate.count-=1;
+			 $scope.game.relationships.girlfriend1.progress +=5;
+		 }
+		 
+	 }
+	 
+	 $scope.girlfriend1GiveChocolateColorCondition = function (){
+		 
+		if($scope.game.chocolate.count>=1) {
+			return "btn-primary";	  
+		} else {
+			return "btn-default";  
+	    }		 
+	 }
+
 	
 		/* ******************************************
 	******** *Girlfriend 2  ********************
 	*********************************************/	
 	
 	
-	 $scope.girlfriend2Unlocked =false;
-	 
-		$scope.getGirlfriend2Name = function (){
-		if($scope.girlfriend1Unlocked == true){
-			return $scope.girlfriend1Name;
-		}else{			
-			return "Go on the prowl";
-		}
-	};
 	
-	
-		$scope.getGirlfriend2Unlocked=function (){
-		return $scope.girlfriend2Unlocked;
-	}
+		/* ******************************************
+	******** *Relationship List  ********************
+	*********************************************/	
 	
 		
 	$scope.relationshipList = [
@@ -1793,23 +2147,158 @@ function($scope,$http){
 			colorCondition:$scope.girlfriend1ColorCondition,
 			energyCost: $scope.girlfriend1EnergyCost,
 			tabsUnlocked: $scope.getGirlfriend1Unlocked,
+			progress: $scope.getGirlfriend1Progress,
+			level: $scope.getGirlfriend1LevelText,
+			dropdownUnlocked: $scope.game.relationships.girlfriend1.level2Buttons,
+			dropdownText: "Give her a gift",
+			dropdown:[
+			{
+				buttonText:"Chocolate",
+				clickCondition: $scope.girlfriend1GiveChocolate,
+				colorCondition : $scope.girlfriend1GiveChocolateColorCondition,
+			},
+			{
+				buttonText:"Flowers",
+				clickCondition: $scope.girlfriend1GiveFlower,
+				colorCondition : $scope.girlfriend1GiveChocolateColorCondition,
+			},
+			],
+			body:[
+			{  //Level 1
+				buttonText: "Friend on facebook",
+				clickCondition: $scope.girlfriend1AcquaintanceFriendFacebook,
+				buttonUnlocked: $scope.girlfriend1AcquaintanceFriendFacebookActive,
+				toolTip : "The first step to every relationsip is a little friendly stalking",
+				cost: "50 E",
+				colorCondition: $scope.girlfriend1AcquaintanceFriendFacebookColorCondition,
+			},
+			{
+				buttonText: "Determine Relationship Status",
+				clickCondition: $scope.girlfriend1AcquaintanceRelationshipStatus,
+				buttonUnlocked:$scope.girlfriend1AcquaintanceRelationshipStatusActive,
+				toolTip : "She's got alot of pictures with other boys. I hope she's single",
+				cost: "60 E",
+				colorCondition: $scope.girlfriend1AcquaintanceRelationshipStatusColorCondition,
+				
+			},
+			{
+				buttonText: "Send her a message",
+				clickCondition: $scope.girlfriend1AcquaintanceSendMessage,
+				buttonUnlocked:$scope.girlfriend1AcquaintanceSendMessageActive,
+				toolTip : "It's gonna take me all day just to get the courage to send 'Hi'",
+				cost: "70 E",
+				colorCondition: $scope.girlfriend1AcquaintanceSendMessageColorCondition,
+			},
+			{
+				buttonText: "Get to know her",
+				clickCondition: $scope.girlfriend1AcquaintanceGetToKnow,
+				buttonUnlocked:$scope.girlfriend1AcquaintanceGetToKnowActive,
+				toolTip : "Just stay cool. Try not to ask how many boyfriends she's had",
+				cost: "75 E",
+				colorCondition: $scope.girlfriend1AcquaintanceGetToKnowColorCondition,
+			},
+			{
+				buttonText: "Level Up!",
+				clickCondition: $scope.girlfriend1AcquaintanceLevelUp,
+				buttonUnlocked:$scope.girlfriend1AcquaintanceLevelUpActive,
+				toolTip : "You did it! Now comes the difficult part",
+				cost: "Free, you earned it",
+				colorCondition:$scope.girlfriend1AcquaintanceLevelUpColorCondition
+			},
+			//Level 2
+			{
+				buttonText: "Hangout",
+				clickCondition: $scope.girlfriend1NewFriendHangout,
+				buttonUnlocked:$scope.game.relationships.girlfriend1.level2Buttons,
+				
+			},			
+			{
+				buttonText: "Ask on Date",
+				clickCondition: $scope.girlfriend1NewFriendAskDate,
+				buttonUnlocked:$scope.game.relationships.girlfriend1.level2Buttons,
+				
+			},
+			],
+			
 				
 			
 		},
 		//girlfriend2
-		{
-			buttonText:$scope.getGirlfriend2Name,
-			unlocked:$scope.getGirlfriend1Unlocked,
-			toolTip: null,
-			clickCondition: null,
-			colorCondition:null,
-			energyCost: null,
-			tabsUnlocked:  $scope.getGirlfriend2Unlocked,
-		},
+		
 	];
 
+		
+	/* ******************************************
+	******** *Store  ********************
+	*********************************************/	
 	
-
+	
+	$scope.storeFiveHourEnergy = function (){
+		
+		if($scope.game.penny.count>=50){
+			$scope.game.penny.count -=50;
+			$scope.game.energyDrink.count +=1;
+			if(!$scope.game.energyDrink.unlocked){
+				$scope.game.energyDrink.unlocked = true;
+			}
+		}
+	}
+	
+	$scope.storeFiveHourEnergyColorCondition = function (){
+		
+	if($scope.game.penny.count>=50)
+	  {
+		  return "btn-primary";	  
+	  } else {
+		  return "btn-default";  
+	  }
+		
+	}
+	
+		$scope.storeBoxChocolate = function (){
+		
+		if($scope.game.penny.count>=50){
+			$scope.game.penny.count -=50;
+			$scope.game.chocolate.count +=1;
+			if(!$scope.game.chocolate.unlocked){
+				$scope.game.chocolate.unlocked=true;
+			}
+		}
+	}
+	
+	$scope.storeBoxChocolateColorCondition = function (){
+		
+	if($scope.game.penny.count>=50)
+	  {
+		  return "btn-primary";	  
+	  } else {
+		  return "btn-default";  
+	  }
+		
+	}	
+	
+	
+	$scope.storeList = [
+	{
+		buttonText: "5 Hour Energy",
+		toolTip:"Use to regen 100% energy",
+		cost: "50 Penny",
+		clickCondition: $scope.storeFiveHourEnergy,
+		colorCondition: $scope.storeFiveHourEnergyColorCondition,
+		
+	},
+	{
+		buttonText: "Box of Chocolates",
+		toolTip:"Eat them yourself or give to someone special",
+		cost: "50 Penny",
+		clickCondition: $scope.storeBoxChocolate,
+		colorCondition: $scope.storeBoxChocolateColorCondition,
+		
+	}
+	];
+	
+	
+	
 	
 	// End of main function
 	} 
