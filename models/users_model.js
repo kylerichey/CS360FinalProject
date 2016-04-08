@@ -62,7 +62,17 @@ game: {
 			count: Number,
 			rate: Number,
 			unlocked: Boolean			
-		},			
+		},
+		gatorade:{
+			count: Number,
+			rate: Number,
+			unlocked: Boolean			
+		},
+		yogaMat:{
+			count: Number,
+			rate: Number,
+			unlocked: Boolean			
+		},		
 		classes:{
 			tabUnlocked: Boolean,
 			eng101:{

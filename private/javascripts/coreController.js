@@ -1677,40 +1677,11 @@ function($scope,$http){
 	];
 		
 	/* ******************************************
-	******** *Class List ********************
+	******** *Class Button List *****************
 	*********************************************/		
 
-	$scope.classButtonList =[
-	
-		//DADA
-		/*{	className: "Defence Against the Dark Arts",
-			unlocked: $scope.getDadaUnlocked,
-			classCount: $scope.getDadaCount,
-			body:[ 
-				{	buttonText:"Take DaDa",
-					toolTip: "This can't possibly be a legit college course.  Reward: 0.24 knowledge/sec", 
-					getCostFunction: $scope.getDadaCost, 
-					getCostCurrency: " book",
-					clickCondition: $scope.classDada,					
-					colorCondition: $scope.dadaColorConditions,
-				},
-				{	buttonText:"Curse Neville",
-					toolTip: "For a defence class, I'm sure learning alot of evil courses. Reward: 20 Knowledge", 
-					getCostFunction: $scope.getDadaStudyCost, 
-					getCostCurrency: " pencil",
-					clickCondition: $scope.classDadaStudy,					
-					colorCondition: $scope.dadaStudyColorConditions,
-				},
-				{	buttonText:"Duel Voldemort",
-					toolTip: "Expecto Patronum. Reward 50 knowledge", 
-					getCostFunction: $scope.getDadaFinalCost, 
-					getCostCurrency: " pencil",
-					clickCondition: $scope.classDadaFinal,					
-					colorCondition: $scope.dadaFinalColorConditions,
-				}
-			]				
-		},*/
-			//CS142
+	$scope.classButtonList =[		
+		//CS142
 		{	className: "CS 142",
 			unlocked: $scope.getCS142Unlocked,
 			classCount: $scope.getCS142Count,
