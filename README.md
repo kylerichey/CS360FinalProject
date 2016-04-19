@@ -29,7 +29,7 @@ EJS. The page validates that a username exists, passwords match, and that after 
 that username is unique. It also validates that passwords are not empty.
 
 ![alt text](https://github.com/kylerichey/CS360FinalProject/blob/master/images/image10.png)
-
+![alt text](https://github.com/kylerichey/CS360FinalProject/blob/master/images/image07.png)
 ###Self
 The Self tab is the primary tab of the Student Game. In the center column, the buttons on
 display a single unique resource. An item’s cost will increase based on the quantity already
@@ -64,5 +64,71 @@ calculated and displayed in the hover over tooltip.
 
 ![alt text](https://github.com/kylerichey/CS360FinalProject/blob/master/images/image12.png)
 
+###Classes
+The Classes tab is opened upon purchase of the player’s first book. Taking a class requires a
+certain amount of books. It also unlocks a new resource called knowledge and grants a small
+amount over time. Studying requires pencils and grants a fixed amount of knowledge. Taking a
+class’s final grants a fixed amount of knowledge and unlocks new classes.
+
+![alt text](https://github.com/kylerichey/CS360FinalProject/blob/master/images/image16.png)
+
+###Employment
+The Employment tab is unlocked when the player takes their first class. The player applies for a
+job by using their knowledge. After applying at a place of employment, the player chooses a
+position there. Once the player has chosen a position, an experience meter begins filling up,
+unlocking new jobs that will provide more pennies over time. New jobs are opened up by taking
+new classes.
 
 
+![alt text](https://github.com/kylerichey/CS360FinalProject/blob/master/images/image06.png)
+
+
+### Relationships
+Relationships become available after taking a class. The game randomly generates a person to
+date with a corresponding tooltip description from a list. After initial contact, the player has to
+complete various tasks to move from Acquaintance, to New Friend, to Girlfriend. The tasks
+begin by only consuming energy, but after leveling up to New Friend the tasks become less
+defined. The player can choose which activities to complete to gain more experience. The
+player may choose give the lucky girl gifts of flowers and chocolate, or hang out with her. Each
+option requires different resources and increase a progress bar to the next level by a different
+amount. Eventually the player can ask her out and she becomes your girlfriend. Currently, the
+relationship tab is only fully implemented if a user is registered as male.
+
+![alt text](https://github.com/kylerichey/CS360FinalProject/blob/master/images/image01.png)
+
+
+### Store
+The Store tab allows the player to purchase resources in areas other than education. The Store
+is unlocked when the player first attempts to find engage in a relationship. The Store has
+various items such as Gatorade or Yoga Mat, which are resources for the gym, 5 Hour Energy,
+which instantly replenishes the players energy to 100%, Box of Chocolates or Flowers which
+can be given as gifts in the relationship tab.
+
+![alt text](https://github.com/kylerichey/CS360FinalProject/blob/master/images/image15.png)
+
+
+### Gym
+The Gym is unlocked when the player first attempts to find engage in a relationship. The gym
+requires resources bought from the store, which are used to level up the player’s Body Type.
+The scale begins at Total Wuss, then progresses to Weak, and then to Acceptable. When the
+player’s Body Type reaches acceptable, they may gain a girlfriend after filling up the respective
+progress bar in the Relationships tab.
+
+![alt text](https://github.com/kylerichey/CS360FinalProject/blob/master/images/image09.png)
+
+
+## Conclusion
+We learned that creating a web application doesn’t not have to be a complex effort. Through the
+aid of Mongo, Angular, Express, and Node the initial setup was straightforward. The
+applications worked together very well. This created an environment with the tools necessary to
+complete the incremental game as it was envisioned.
+
+If we were to do the project again, it may have been beneficial to map out the more details of
+the application before writing any code. This would have made it easier to equally divide the
+work so that each member group had a more complete idea of their responsibilities. The
+informal approach of coding often resulted in minor code and design collisions that could have
+potentially been avoided.
+
+None of the technologies used could be considered disappointments. The MEAN stack was
+incredibly valuable. The frontend was implemented with HTML and Bootstrap. This was very
+useful in providing a good UI. The backend code was all javascript, accessed using Angular.
