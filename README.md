@@ -1,13 +1,13 @@
 # CS360FinalProject
 
-Executive Summary
+##Executive Summary
 The goal of this project was to create an incremental game about the life of a college student
 using the MEAN stack. Although other games of this type exist, this project is unique because it
 uses user authentication to store and save the game state. This allows players to save the
 game at any point and return to it on any computer. This goal resulted in a complete and
 enjoyable game with potential for additional content.
 
-Functional Description
+##Functional Description
 The goal this application is to be a fun and addicting game. Games of this type are not meant to
 always be actively played. Instead it is intended that it runs in the background for some interval
 of time. When the player returns to the game, he can quickly spend the accumulated resources
