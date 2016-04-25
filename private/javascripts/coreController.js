@@ -2631,7 +2631,47 @@ function($scope,$http){
 			toolTip:"Fun to do and to watch",
 			unlocked: true,
 		},
-	];	
+	];
+
+	$scope.achievmentList = [
+	{
+		title:"Saving up for a rainy day",
+		unlocked:true,
+		iconClass: "glyphicon-piggy-bank", 
+		
+	},
+		{
+		title:"Test1",
+		unlocked:true,
+		iconClass: "glyphicon-search", 
+		
+	},
+		{
+		title:"Test1",
+		unlocked:true,
+		iconClass: "glyphicon-search", 
+		
+	},
+		{
+		title:"Test1",
+		unlocked:true,
+		iconClass: "glyphicon-search", 
+		
+	},
+		{
+		title:"Test1",
+		unlocked:true,
+		iconClass: "glyphicon-search", 
+		
+	},
+		{
+		title:"Test2",
+		unlocked:false,
+		iconClass: "glyphicon-search", 
+		
+		
+	},
+	];
 	
 	
 	// End of main function

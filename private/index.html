@@ -157,11 +157,27 @@
 						</div>
 					</div>
 				</div>
-				<div id="console" class="col-md-4">
-					<h4> Output: </h4>
-					<div ng-repeat="entry in gameOutputConsoleList | orderBy: '-number' | limitTo:15"> 		
-						{{entry.timestamp}}: {{entry.content}}
-						<br><br>
+				<div class="col-md-4">
+					<ul class="nav nav-tabs">
+						<li class="active"><a data-toggle="tab" href="#outputTab">Output</a></li>
+						<li ><a data-toggle="tab" href="#achievementTab">Achievements</a></li>  
+					</ul>						
+					<div class="tab-content">
+						<div id="outputTab" class="tab-pane fade in active">		
+							<br>
+								<div ng-repeat="entry in gameOutputConsoleList | orderBy: '-number' | limitTo:15"> 		
+									{{entry.timestamp}}: {{entry.content}}
+									<br><br>
+								</div>
+						</div>
+						<div id="achievementTab" class="tab-pane fade">	
+							<div ng-repeat="entry in achievmentList">
+								<div class ="alert" ng-class="entry.unlocked?'alert-info':'alert-gray'">
+									<span class="glyphicon" ng-class="entry.iconClass" aria-hidden="true"></span>
+									<p> {{entry.title}} </p>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 		    </div>			  
