@@ -1,4 +1,4 @@
-# CS360FinalProject
+# The Student Game
 
 ##Executive Summary
 The goal of this project was to create an incremental game about the life of a college student using the MEAN stack. Although other games of this type exist, this project is unique because it
