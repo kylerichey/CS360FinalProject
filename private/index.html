@@ -61,7 +61,7 @@
 					</div>	
 					<h4 ng-show="getGirlfriend1Unlocked()"> Body Level: {{getBodyLevelString()}}</h4>
 					<h4 ng-show="getGirlfriend1Unlocked()"> Body XP: {{getBodyXp()}}/{{getBodyXpToLevel()}}</h4>
-						
+					<h4 ng-show="getClassTabUnlocked()" >Achievement Points: {{getAchievementPoints()}} </h4>						
 					<div ng-repeat="entry in selfCurrencyList">
 						<h4 ng-show="entry.unlocked()">{{entry.title}}<span ng-show="entry.showCount">: {{entry.count()}} </span> <span ng-show="entry.showRate"> ({{entry.rate()}}/sec) </span> <span style="font-size:14px" ng-show="entry.showUse"> <a href="#" ng-click="entry.useClick()">{{entry.useText}}</a> </span> </h4>
 					</div>										
@@ -154,14 +154,36 @@
 								<button class="btn tooltip-button" ng-class="entry.colorCondition()" ng-show="entry.unlocked()" ng-click="entry.clickCondition()">{{entry.buttonText}} <span class="badge" >{{entry.cost}}</span> <span class="tooltip"> {{entry.toolTip}}</span></button> 
 							</div>								
 						</div>
-						<div id="achievementTab" class="tab-pane fade">
-							<div ng-repeat="entry in achievementList">
-								<div class ="alert tooltip-button" ng-class="entry.unlocked()?'alert-info':'alert-gray'">
+						<div id="achievementTab" class="tab-pane fade">							
+							<div ng-repeat="entry in achievementList"> 		
+							<div class="btn-group" role="group" aria-label="...">
+								<div class ="alert alert-warning tooltip-button" >
 									<span class="glyphicon" ng-class="entry.iconClass" aria-hidden="true"></span>
-									<p> {{entry.title}} </p>
-									<span class="tooltip"> {{entry.toolTip()}}</span>
+									<p> {{entry.body[entry.currentAchievementPointer()].title}} </p>
+									<span class="badge achievement-badge">{{entry.body[entry.currentAchievementPointer()].points}}</span>
+									<span class="tooltip"> {{entry.body[entry.currentAchievementPointer()].toolTip()}}</span>
+								
+								<div class="btn-group" role="group">
+									<button type="button" class="btn btn-warning dropdown-toggle" ng-show="entry.currentAchievementPointer()>0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">					  
+										<span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu">
+										<div ng-repeat="bodyentry in entry.body">
+											<li>
+											<div class ="alert alert-info tooltip-button" ng-show="bodyentry.completed()">
+												<p> {{bodyentry.title}} </p>
+												<span class="badge achievement-badge">{{bodyentry.points}}</span>
+												<span class="tooltip"> {{bodyentry.toolTip()}}</span>
+											</div>
+											</li>
+										</div>			 
+									</ul>
 								</div>
-							</div>					
+							</div>
+							</div>
+						</div>
+
+												  
 						</div>
 					</div>
 				</div>

@@ -1,0 +1,46 @@
+<div class="btn-group" role="group" aria-label="...">
+						<button type="button" class="btn"  ng-class="saveButtoncolorCondition()" ng-click="saveUserStateOnClick()">{{getSaveButtonText()}}</button>
+						<div class="btn-group" role="group">
+							<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">					  
+								<span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu">
+								<li><a href="#" data-toggle="modal" data-target="#confirmReset">Reset</a></li>
+								<li><a href="#" ng-show="getDebugEnabled()" ng-click="giveFreePenny()">Debug</a></li>
+								<li><a href="#" data-toggle="modal" data-target="#changeLogModal">Change Log</a></li>
+								<li role="separator" class="divider"></li>
+								<li><a href="/login">Logout</a></li>					 
+							</ul>
+						</div>
+					</div>		
+					
+					
+					
+					
+					
+					
+					
+					
+					
+							<div ng-repeat="entry in achievementList"> 						
+								<div class="panel panel-primary" ng-show="entry.unlocked()">
+									<div class="panel-heading">
+										<div class ="alert alert-warning tooltip-button" >
+												<span class="glyphicon" ng-class="entry.iconClass" aria-hidden="true"></span>
+												<p> {{entry.body[entry.currentAchievementPointer()].title}} </p>
+												<span class="badge achievement-badge">{{entry.body[entry.currentAchievementPointer()].points}}</span>
+												<span class="tooltip"> {{entry.body[entry.currentAchievementPointer()].toolTip()}}</span>
+											</div>
+									</div>
+									<div class="panel-body" ng-show="entry.currentAchievementPointer()>0">
+										<div ng-repeat="bodyentry in entry.body">
+											<div class ="alert alert-info tooltip-button" ng-show="bodyentry.completed()">
+												<p> {{bodyentry.title}} </p>
+												<span class="badge achievement-badge">{{bodyentry.points}}</span>
+												<span class="tooltip"> {{bodyentry.toolTip()}}</span>
+											</div>
+										</div>										
+									</div>
+							    </div>
+								<br>
+						  </div> 

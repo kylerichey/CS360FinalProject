@@ -268,19 +268,30 @@ function($scope,$http){
 	/* ******************************************
 	******** * Tick Counter	********************
 	*********************************************/
-	$scope.savingUpForARainyDayAchievement = false;
+
 	
 	$scope.updateAchievements= function (){		
 		
-		if(($scope.maxCollectedPenny <=100)  && ($scope.game.penny.count > $scope.maxCollectedPenny)){
+		if($scope.game.penny.count > $scope.maxCollectedPenny){
 			$scope.maxCollectedPenny = $scope.game.penny.count;
 		}
 		
 		if (($scope.maxCollectedPenny >=100) && ($scope.savingUpForARainyDayAchievement == false))
 		{
+			$scope.currentPennyAchievementCounter+=1;
+			$scope.achievementPoints+=10;
 			$scope.savingUpForARainyDayAchievement = true;
 			$scope.addEntryToConsole("Saving up for a rainy day achievement earned!");
-			
+				
+		}
+		
+		if (($scope.maxCollectedPenny >=200) && ($scope.gotMyMindOnMoneyAchievement == false))
+		{
+			$scope.currentPennyAchievementCounter+=1;
+			$scope.achievementPoints+=20;
+			$scope.gotMyMindOnMoneyAchievement = true;
+			$scope.addEntryToConsole("Got My Mind On Money achievement earned!");
+				
 		}
 		
 	}
@@ -701,7 +712,7 @@ function($scope,$http){
 	******** *Penny		************************
 	*********************************************/	
 	
-	$scope.maxCollectedPenny = 0;
+
 	
 
 	$scope.increasePennyCount = function() {
@@ -712,26 +723,6 @@ function($scope,$http){
 		}	
 		
 		
-	}
-	$scope.getMaxCollectedPennyUnlocked = function (){
-		if($scope.maxCollectedPenny>=100){
-			return true;
-		}else{
-			return false;
-		}		
-	}
-	
-	$scope.getMaxCollectedPennyTooltip = function (){
-		if ( $scope.savingUpForARainyDayAchievement == false){
-			return "Have 100 penny. Max Ever Collected:" + $scope.getMaxCollectedPenny() + "/100";
-		}
-		else{
-			return "Have 100 penny";
-		}
-	}
-	
-	$scope.getMaxCollectedPenny = function (){
-		return $scope.maxCollectedPenny;
 	}
 	
 	$scope.getPennyRate = function(){
@@ -2677,12 +2668,147 @@ function($scope,$http){
 	];
 
 	
+		/* ******************************************
+	******** *Achievements  ********************
+	*********************************************/	
+	
+	$scope.achievementPoints = 0;	
+	$scope.getAchievementPoints = function (){
+		return $scope.achievementPoints;
+	}
+	
+	
+	
+	/* ******************************************
+	******** *Penny Count  ********************
+	*********************************************/	
+	
+	$scope.maxCollectedPenny = 0;
+	$scope.currentPennyAchievementCounter = 0;
+	$scope.savingUpForARainyDayAchievement = false;
+	$scope.gotMyMindOnMoneyAchievement = false;
+	
+	$scope.getCurrentPennyAchievementCounter = function (){
+		return $scope.currentPennyAchievementCounter;
+	}
+	
+	$scope.getMaxCollectedPenny = function (){
+		return $scope.maxCollectedPenny;
+	}
+	
+	$scope.getSavingUpForARainyDayAchievement = function ()
+	{
+		return $scope.savingUpForARainyDayAchievement;
+	}
+	
+	$scope.getSavingUpForARainyDayAchievementTooltip = function (){
+		if ( $scope.savingUpForARainyDayAchievement == false){
+			return "Have 100 penny. Max Ever Collected:" + $scope.getMaxCollectedPenny() + "/100";
+		}
+		else{
+			return "Have 100 penny";
+		}
+	}
+	
+	$scope.getGotMyMindOnMoneyAchievement = function ()
+	{
+		return $scope.gotMyMindOnMoneyAchievement;
+	}
+	
+	$scope.getGotMyMindOnMoneyAchievementTooltip = function (){
+		if ( $scope.gotMyMindOnMoneyAchievement == false){
+			return "Have 200 penny. Max Ever Collected:" + $scope.getMaxCollectedPenny() + "/200";
+		}
+		else{
+			return "Have 200 penny";
+		}
+	}
+
+	$scope.getGotMyMindOnMoneyAchievement3 = function ()
+	{
+		return false;
+	}
+	
+	$scope.getPennyCollectionAchievement = function ()
+	{
+		return true;
+	}
+	
+		
+	/* ******************************************
+	******** *Side Jobs Achievements  ***********
+	*********************************************/	
+	$scope.currentSideJobAchievementCounter = 0;
+	$scope.doorToDoorAchievement = false;
+	
+	$scope.getCurrentSideJobAchievementCounter = function (){
+		return $scope.currentSideJobAchievementCounter;
+	}
+	
+	
+	
+	$scope.getSideJobsAchievement = function ()
+	{
+		return true;
+	}
+	
+	
+	$scope.getDoorToDoorProAchievement = function ()
+	{
+		return $scope.doorToDoorAchievement;
+	}
+	
+	$scope.getDoorToDoorProAchievementTooltip = function (){
+		return "asd";
+	}
+
+	
+			/* ******************************************
+	******** *Achievement Object  ********************
+	*********************************************/	
+	
+	
 	$scope.achievementList = [
 	{
-		title:"Saving up for a rainy day",
-		unlocked:$scope.getMaxCollectedPennyUnlocked,
-		toolTip: $scope.getMaxCollectedPennyTooltip,
-		iconClass: "glyphicon-piggy-bank", 		
+		//pennys Collected
+		currentAchievementPointer:$scope.getCurrentPennyAchievementCounter,
+		iconClass: "glyphicon-piggy-bank",
+		unlocked: $scope.getPennyCollectionAchievement,
+		body:[
+		{
+			title:"Saving up for a rainy day",
+			completed:$scope.getSavingUpForARainyDayAchievement,		
+			toolTip: $scope.getSavingUpForARainyDayAchievementTooltip,			
+			points: 10,
+		},
+		{
+			title:"Got my mind on money",
+			completed:$scope.getGotMyMindOnMoneyAchievement,			
+			toolTip: $scope.getGotMyMindOnMoneyAchievementTooltip,			
+			points: 20,
+		},
+		{
+			title:"test3",
+			completed:$scope.getGotMyMindOnMoneyAchievement3,			
+			toolTip: $scope.getGotMyMindOnMoneyAchievementTooltip,			
+			points: 30,
+		},
+		
+		]
+	},
+	{
+		//Side Jobs
+		currentAchievementPointer:$scope.getCurrentSideJobAchievementCounter,
+		iconClass: "glyphicon-user",
+		unlocked: $scope.getSideJobsAchievement,
+		body:[
+		{
+			title:"Door to Door Pro",
+			completed:$scope.getDoorToDoorProAchievement,		
+			toolTip: $scope.getDoorToDoorProAchievementTooltip,			
+			points: 10,
+		},
+		]		
 	},
 	
 	];
