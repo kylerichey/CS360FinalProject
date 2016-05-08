@@ -268,6 +268,24 @@ function($scope,$http){
 	/* ******************************************
 	******** * Tick Counter	********************
 	*********************************************/
+	$scope.savingUpForARainyDayAchievement = false;
+	
+	$scope.updateAchievements= function (){		
+		
+		if(($scope.maxCollectedPenny <=100)  && ($scope.game.penny.count > $scope.maxCollectedPenny)){
+			$scope.maxCollectedPenny = $scope.game.penny.count;
+		}
+		
+		if (($scope.maxCollectedPenny >=100) && ($scope.savingUpForARainyDayAchievement == false))
+		{
+			$scope.savingUpForARainyDayAchievement = true;
+			$scope.addEntryToConsole("Saving up for a rainy day achievement earned!");
+			
+		}
+		
+	}
+	
+	
 	$scope.updateJobProgressBars = function (){
 		//mcdonalds
 		if($scope.game.jobs.mcdonalds.workingAsBurgerFlipper && $scope.game.jobs.mcdonalds.progress <= 100){			
@@ -329,7 +347,9 @@ function($scope,$http){
 			$scope.game.player.energy = 100;
 		}
 		
+		
 		$scope.updateJobProgressBars();		
+		$scope.updateAchievements();
 	};
 	/* ******************************************
 	******** * Misc Functions ******************	
@@ -681,15 +701,38 @@ function($scope,$http){
 	******** *Penny		************************
 	*********************************************/	
 	
-	
+	$scope.maxCollectedPenny = 0;
 	
 
 	$scope.increasePennyCount = function() {
 		$scope.game.penny.count +=1;
+		
 		if($scope.game.penny.count>=10){
 			$scope.game.pencil.unlocked = true;				
-		}			
-	};
+		}	
+		
+		
+	}
+	$scope.getMaxCollectedPennyUnlocked = function (){
+		if($scope.maxCollectedPenny>=100){
+			return true;
+		}else{
+			return false;
+		}		
+	}
+	
+	$scope.getMaxCollectedPennyTooltip = function (){
+		if ( $scope.savingUpForARainyDayAchievement == false){
+			return "Have 100 penny. Max Ever Collected:" + $scope.getMaxCollectedPenny() + "/100";
+		}
+		else{
+			return "Have 100 penny";
+		}
+	}
+	
+	$scope.getMaxCollectedPenny = function (){
+		return $scope.maxCollectedPenny;
+	}
 	
 	$scope.getPennyRate = function(){
 		return  Math.round($scope.game.penny.rate *1000)/100;	
@@ -2633,45 +2676,26 @@ function($scope,$http){
 		},
 	];
 
-	$scope.achievmentList = [
+	
+	$scope.achievementList = [
 	{
 		title:"Saving up for a rainy day",
-		unlocked:true,
-		iconClass: "glyphicon-piggy-bank", 
-		
+		unlocked:$scope.getMaxCollectedPennyUnlocked,
+		toolTip: $scope.getMaxCollectedPennyTooltip,
+		iconClass: "glyphicon-piggy-bank", 		
 	},
-		{
-		title:"Test1",
-		unlocked:true,
-		iconClass: "glyphicon-search", 
-		
-	},
-		{
-		title:"Test1",
-		unlocked:true,
-		iconClass: "glyphicon-search", 
-		
-	},
-		{
-		title:"Test1",
-		unlocked:true,
-		iconClass: "glyphicon-search", 
-		
-	},
-		{
-		title:"Test1",
-		unlocked:true,
-		iconClass: "glyphicon-search", 
-		
-	},
-		{
-		title:"Test2",
-		unlocked:false,
-		iconClass: "glyphicon-search", 
-		
-		
-	},
+	
 	];
+	
+	//only enable debug mode for admin
+	
+	$scope.getDebugEnabled  = function(){		
+		if ($scope.playerName.localeCompare("admin")){
+			return false;
+		}else{
+			return true;
+		}
+	}
 	
 	
 	// End of main function
